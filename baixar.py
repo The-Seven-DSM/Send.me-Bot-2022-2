@@ -11,14 +11,18 @@ d = datetime.now()
 ano = d.strftime("%Y")
 mes = d.strftime("%m")
 diaExtenso = d.strftime("%d")
-meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+meses = ['','Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 dia = str(diaExtenso)
 if len(dia) == 1:
     dia = "0" + dia
 
+cidadePDF = True
+exec1PDF = True
+exec2PDF = True
+
 #BAIXAR PDFS - DIARIO OFICIAL
 
-for pag in range(1,133):
+for pag in range(1,999):
 
     if len(str(pag)) == 1:
         pagExtenso = '000' + str(pag)
@@ -31,51 +35,96 @@ for pag in range(1,133):
     
     print(pagExtenso)
 
-    link1 = f"http://diariooficial.imprensaoficial.com.br/doflash/prototipo/{ano}/{meses[mes]}/{dia}/cidade/pdf/pg_{pagExtenso}.pdf"
-    link2 = f"http://diariooficial.imprensaoficial.com.br/doflash/prototipo/{ano}/{meses[mes]}/{dia}/exec1/pdf/pg_{pagExtenso}.pdf"
-    link3 = f"http://diariooficial.imprensaoficial.com.br/doflash/prototipo/{ano}/{meses[mes]}/{dia}/exec2/pdf/pg_{pagExtenso}.pdf"
+    link1 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + dia + "/cidade/pdf/pg_" + pagExtenso + ".pdf"
+    link2 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + dia + "/exec1/pdf/pg_" + pagExtenso + ".pdf"
+    link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + dia + "/exec2/pdf/pg_" + pagExtenso + ".pdf"
 
     if (d.strftime("%w") == 0 or d.strftime("%w") == 1):
         print('Hoje não tem diário oficial')
     else:
-        response = requests.get(link1)
-        open("./paginas/python" + pagExtenso + ".pdf", "wb").write(response.content)
-        f = open("./paginas/python" + pagExtenso + ".pdf", "r")
-
-        if f.readline()[0:8] != "%PDF-1.4":
-            if pagExtenso == "0001":
-                print("Hoje não tem diário oficial")
-            else:
-                print('Ultima página: ',pagExtenso)
-            f.close()
-            if os.path.exists("./paginas/python" + pagExtenso + ".pdf"):
-                os.remove("./paginas/python" + pagExtenso + ".pdf")
+        if not cidadePDF and not exec1PDF and not exec2PDF:
             break
+        if cidadePDF == True:
+            cidade = requests.get(link1)
+            open("./paginas/cidade" + pagExtenso + ".pdf", "wb").write(cidade.content)
+            f = open("./paginas/cidade" + pagExtenso + ".pdf", "r")
+            if f.readline()[0:8] != "%PDF-1.4":
+                if pagExtenso == "0001":
+                    print("Hoje não tem diário oficial")
+                else:
+                    print('Ultima página do caderno "Cidade": ', int(pagExtenso) - 1)
+                f.close()
+                if os.path.exists("./paginas/cidade" + pagExtenso + ".pdf"):
+                    os.remove("./paginas/cidade" + pagExtenso + ".pdf")
+                    cidadePDF = False
+        if exec1PDF == True:
+            exec1 = requests.get(link2)
+            open("./paginas/exec1" + pagExtenso + ".pdf", "wb").write(exec1.content)
+            f = open("./paginas/exec1" + pagExtenso + ".pdf", "r")
 
-#UNIR PDF CIDADE
+            if f.readline()[0:8] != "%PDF-1.4":
+                if pagExtenso == "0001":
+                    print("Hoje não tem diário oficial")
+                else:
+                    print('Ultima página do caderno "Executivo 1": ', int(pagExtenso) - 1)
+                f.close()
+                if os.path.exists("./paginas/exec1" + pagExtenso + ".pdf"):
+                    os.remove("./paginas/exec1" + pagExtenso + ".pdf")
+                    exec1PDF = False
+        if exec2PDF == True:
+            exec2 = requests.get(link3)
+            open("./paginas/exec2" + pagExtenso + ".pdf", "wb").write(exec2.content)
+            f = open("./paginas/exec2" + pagExtenso + ".pdf", "r")
+
+            if f.readline()[0:8] != "%PDF-1.4":
+                if pagExtenso == "0001":
+                    print("Hoje não tem diário oficial do executivo 2")
+                else:
+                    print('Ultima página do caderno "Executivo 2": ', int(pagExtenso) - 1 )
+                f.close()
+                if os.path.exists("./paginas/exec2" + pagExtenso + ".pdf"):
+                    os.remove("./paginas/exec2" + pagExtenso + ".pdf")
+                    exec2PDF = False
+
+#UNIR PDFS
 
 caminho = ".\paginas"
 
 pdfs = sorted(os.listdir(caminho))
 
-pdf_files = [f for f in pdfs if f.endswith("pdf")]
+#CIDADE
+pdf_files = [f for f in pdfs if f.startswith("cidade")]
 merger = PdfFileMerger()
-
 for nomeArquivo in pdf_files:
     merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
+merger.write(os.path.join(caminho, f"Caderno_cidade_{diaExtenso}_{mes}.pdf"))
 
-merger.write(os.path.join(caminho, f"cidade_{diaExtenso}_{mes}.pdf"))
+#EXEC1
+pdf_files = [f for f in pdfs if f.startswith("exec1")]
+merger = PdfFileMerger()
+for nomeArquivo in pdf_files:
+    merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
+merger.write(os.path.join(caminho, f"Caderno_exec1_{diaExtenso}_{mes}.pdf"))
 
-LER PDF CIDADE
+#EXEC2
+pdf_files = [f for f in pdfs if f.startswith("exec2")]
+merger = PdfFileMerger()
+for nomeArquivo in pdf_files:
+    merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
+merger.write(os.path.join(caminho, f"Caderno_exec2_{diaExtenso}_{mes}.pdf"))
 
-reader = PdfFileReader(f'./paginas/cidade_{diaExtenso}_{mes}.pdf')
+#LER PDF CIDADE
 
-for i in range(reader.getNumPages()):
-    pagina = reader.getPage(i)
-    conteudo = pagina.extractText()
-    for x in conteudo.split('\n'):
-        if 'JOSE DE' in x:
-            print(f'\nNome "José de" nesse parágrafo da página: {i+1} \n', x)
+print("\nACABOU\n")
+
+# reader = PdfFileReader(f'./paginas/cidade_{diaExtenso}_{mes}.pdf')
+
+# for i in range(reader.getNumPages()):
+#     pagina = reader.getPage(i)
+#     conteudo = pagina.extractText()
+#     for x in conteudo.split('\n'):
+#         if 'JOSE DE' in x:
+#             print(f'\nNome "José de" nesse parágrafo da página: {i+1} \n', x)
 
 # TRANSFORMA EM TXT -
 
