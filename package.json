@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "axios": "^0.27.2",
+    "cheerio": "^1.0.0-rc.12",
+    "download": "^8.0.0",
+    "pdf-parse": "^1.1.1",
+    "puppeteer": "^17.1.3"
+  }
+}
