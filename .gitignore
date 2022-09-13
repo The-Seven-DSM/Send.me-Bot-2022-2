@@ -1,5 +1,7 @@
-/paginas/*
+/paginas/*.pdf
 *.sql
+*.txt
+
 !requirements.txt
 
 # Created by https://www.toptal.com/developers/gitignore/api/node

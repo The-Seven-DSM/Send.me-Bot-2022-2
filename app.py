@@ -31,7 +31,7 @@ def formatar(n):
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="tuca123"
+  password="tuca123" # <- SENHA DO MYSQL
 )
 
 mycursor = mydb.cursor()
@@ -45,7 +45,7 @@ mycursor.execute("ALTER TABLE email ADD FOREIGN KEY (fk_id_associado) REFERENCES
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="tuca123",
+  password="tuca123", # <- SENHA DO MYSQL
   database="API_a"
 )
 
