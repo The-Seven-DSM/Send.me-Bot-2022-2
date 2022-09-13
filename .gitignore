@@ -1,6 +1,7 @@
 /paginas/*.pdf
 *.sql
 *.txt
+teste.py
 
 !requirements.txt
 
