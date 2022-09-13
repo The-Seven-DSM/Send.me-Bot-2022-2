@@ -13,9 +13,12 @@ Create table IF NOT EXISTS backoffice(
 Create table IF NOT EXISTS email(
 	id_email int not null primary key auto_increment,
     fk_id_associado int,
-    assunto varchar(999),
     corpo varchar(7999),
+    pagina varchar(999),
     dataenvio datetime(6),
     estado bool
 );
 ALTER TABLE email ADD FOREIGN KEY (fk_id_associado) REFERENCES associado(id_associado);
+
+INSERT INTO associado VALUES (0, 'Marcela','marcela@gmail.com','Feminino');
+INSERT INTO associado VALUES (0, 'Vitória','marcela@gmail.com','Feminino');

@@ -1,11 +1,10 @@
 #http://diariooficial.imprensaoficial.com.br/doflash/prototipo/2022/Setembro/03/cidade/pdf/pg_0001.pdf
 from datetime import datetime
-from re import X
-import requests
+#import requests
 import os
 import mysql.connector
 from PyPDF2 import PdfFileReader, PdfFileMerger
-from pathlib import Path
+#from pathlib import Path
 
 d = datetime.now()
 
@@ -26,7 +25,7 @@ exec2PDF = True
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="fatec"
+  password="tuca123"
 )
 
 mycursor = mydb.cursor()
@@ -40,9 +39,11 @@ mycursor.execute("ALTER TABLE email ADD FOREIGN KEY (fk_id_associado) REFERENCES
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="fatec",
+  password="tuca123",
   database="API_a"
 )
+
+mycursor = mydb.cursor()
 
 #BAIXAR PDFS - DIARIO OFICIAL
 
@@ -136,20 +137,27 @@ pdfs = sorted(os.listdir(caminho))
 #     merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
 # merger.write(os.path.join(caminho, f"Caderno_exec2_{diaExtenso}_{mes}.pdf"))
 
-nome = "JOÃO PEDRO"
+mycursor.execute("SELECT id_associado, nome  FROM associado")
+
+nomes = mycursor.fetchall()
+print(nomes)
 txt = ''
 
 #LER PDF CIDADE
 
 reader = PdfFileReader(f'./paginas/Caderno_cidade_{diaExtenso}_{mes}.pdf')
+data = f'{ano}-{mes}-{dia}'
 
 for i in range(reader.getNumPages()):
     pagina = reader.getPage(i)
+    numpag = i + 1
     conteudo = pagina.extractText()
-    for x in conteudo.split('\n'):
-        if nome in x:
-            txt += f'\nCaderno: Cidade\n Nome: "{nome}"\n Página: {i+1} \nParágrafo: {x}\n'
-            print(f'\nCaderno: Cidade\n Nome: "{nome}"\n Página: {i+1} \nParágrafo: {x}\n')
+    for paragrafo in conteudo.split('\n'):
+        for nome in nomes:
+            if nome[1] in paragrafo:
+                link1 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + dia + "/cidade/pdf/pg_" + str(numpag) + ".pdf"
+                print(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link1}","{data}",0)')
+                mycursor.execute(f'INSERT INTO email VALUES ( 0, {nome[0]}, {paragrafo}, "{link1}", "{data}", 0)')
 
 #LER PDF EXECUTIVO 1
 
@@ -158,10 +166,11 @@ reader = PdfFileReader(f'./paginas/Caderno_exec1_{diaExtenso}_{mes}.pdf')
 for i in range(reader.getNumPages()):
     pagina = reader.getPage(i)
     conteudo = pagina.extractText()
-    for x in conteudo.split('\n'):
-        if nome in x:
-            txt += f'\nCaderno: Executivo 1\n Nome: "{nome}"\n Página: {i+1} \nParágrafo: {x}\n'
-            print(f'\nCaderno: Executivo 1\n Nome: "{nome}"\n Página: {i+1} \nParágrafo: {x}\n')
+    for paragrafo in conteudo.split('\n'):
+        for nome in nomes:
+            if nome[1] in paragrafo:
+                link2 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + dia + "/exec1/pdf/pg_" + str(numpag) + ".pdf"
+                mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link2}", "{data}", 0)')
 
 #LER PDF EXECUTIVO 2
 
@@ -170,15 +179,16 @@ reader = PdfFileReader(f'./paginas/Caderno_exec2_{diaExtenso}_{mes}.pdf')
 for i in range(reader.getNumPages()):
     pagina = reader.getPage(i)
     conteudo = pagina.extractText()
-    for x in conteudo.split('\n'):
-        if nome in x:
-            txt += f'\nCaderno: Executivo 2\n Nome: "{nome}"\n Página: {i+1} \nParágrafo: {x}\n'
-            print(f'\nCaderno: Executivo 2\n Nome: "{nome}"\n Página: {i+1} \nParágrafo: {x}\n')
+    for paragrafo in conteudo.split('\n'):
+        for nome in nomes:
+            if nome[1] in paragrafo:
+                link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + dia + "/exec2/pdf/pg_" + str(numpag) + ".pdf"
+                mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link2}", "{data}", 0)')
 
 # TRANSFORMA EM TXT -
 
-with Path(f'{nome}_{diaExtenso}_{mes}.txt').open(mode = 'w', encoding='utf-8') as output_file:
-    output_file.write(txt)
+# with Path(f'{nome}_{diaExtenso}_{mes}.txt').open(mode = 'w', encoding='utf-8') as output_file:
+#     output_file.write(txt)
 
 # RETORNAR JSON
 
