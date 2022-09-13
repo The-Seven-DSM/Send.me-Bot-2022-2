@@ -1,8 +1,6 @@
 /paginas/*
-teste.py
-uiuiuiui.py
-ler_texto.js
-nome.txt
+*.sql
+!requirements.txt
 
 # Created by https://www.toptal.com/developers/gitignore/api/node
 # Edit at https://www.toptal.com/developers/gitignore?templates=node

@@ -1,10 +1,9 @@
-#http://diariooficial.imprensaoficial.com.br/doflash/prototipo/2022/Setembro/03/cidade/pdf/pg_0001.pdf
 from datetime import datetime
 import requests
 import os
 import mysql.connector
 
-print(datetime.now().strftime("%M:%S"))
+#print(datetime.now().strftime("%M:%S")) #Mostrar o horário que começa a execução do script
 
 from PyPDF2 import PdfFileReader, PdfFileMerger
 from pathlib import Path
@@ -23,12 +22,16 @@ cidadePDF = True
 exec1PDF = True
 exec2PDF = True
 
-# CONEXÃO MYSQL
+def formatar(n):
+    a = 4 - len(str(n))
+    return str(a * '0') + str(n)
+
+# CONEXÃO MYSQL E CRIAÇÃO DO BANCO DE DADOS
 
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="fatec"
+  password="tuca123"
 )
 
 mycursor = mydb.cursor()
@@ -36,13 +39,13 @@ mycursor.execute("CREATE DATABASE IF NOT EXISTS API_a;")
 mycursor.execute("use API_a;")
 mycursor.execute("CREATE table IF NOT EXISTS associado( id_associado int not null primary key auto_increment, nome varchar(55), email varchar(256), sexo varchar(10));")
 mycursor.execute("Create table IF NOT EXISTS backoffice(id_back int not null primary key auto_increment, nome varchar(55));")
-mycursor.execute("Create table IF NOT EXISTS email( id_email int not null primary key auto_increment, fk_id_associado int, corpo varchar(19999), pagina varchar(999), dataenvio datetime(6), estado bool );")
+mycursor.execute("Create table IF NOT EXISTS email( id_email int not null primary key auto_increment, fk_id_associado int, corpo text(19999), pagina varchar(999), dataenvio datetime(6), estado bool );")
 mycursor.execute("ALTER TABLE email ADD FOREIGN KEY (fk_id_associado) REFERENCES associado(id_associado);")
 
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="fatec",
+  password="tuca123",
   database="API_a"
 )
 
@@ -53,18 +56,11 @@ mycursor.execute("INSERT INTO associado VALUES (0, 'Vitória','marcela@gmail.com
 
 mydb.commit()
 
-#BAIXAR PDFS - DIARIO OFICIAL
+# BAIXAR PDFS DE HOJE - DIARIO OFICIAL 
 
-for pag in range(1,999):
+for pag in range(1,9999):
 
-    if len(str(pag)) == 1:
-        pagExtenso = '000' + str(pag)
-    elif len(str(pag)) == 2:
-        pagExtenso = '00' + str(pag)
-    elif len(str(pag)) == 3:
-        pagExtenso = '0' + str(pag)
-    else:
-        pagExtenso = str(pag)
+    pagExtenso = formatar(pag)
 
     link1 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + dia + "/cidade/pdf/pg_" + pagExtenso + ".pdf"
     link2 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + dia + "/exec1/pdf/pg_" + pagExtenso + ".pdf"
@@ -72,11 +68,14 @@ for pag in range(1,999):
 
     if (d.strftime("%w") == 0 or d.strftime("%w") == 1):
         print('Hoje não tem diário oficial')
+        exit() # Se for domingo ou segunda, não tem diário oficial
+
     else:
         if not cidadePDF and not exec1PDF and not exec2PDF:
             break
         print(pagExtenso)
-        if cidadePDF == True:
+
+        if cidadePDF == True: # Baixar as páginas do caderno Cidade
             cidade = requests.get(link1)
             open("./paginas/cidade" + pagExtenso + ".pdf", "wb").write(cidade.content)
             f = open("./paginas/cidade" + pagExtenso + ".pdf", "r")
@@ -89,7 +88,8 @@ for pag in range(1,999):
                 if os.path.exists("./paginas/cidade" + pagExtenso + ".pdf"):
                     os.remove("./paginas/cidade" + pagExtenso + ".pdf")
                     cidadePDF = False
-        if exec1PDF == True:
+
+        if exec1PDF == True: #Baixar as páginas do caderno Executivo 1
             exec1 = requests.get(link2)
             open("./paginas/exec1" + pagExtenso + ".pdf", "wb").write(exec1.content)
             f = open("./paginas/exec1" + pagExtenso + ".pdf", "r")
@@ -103,7 +103,8 @@ for pag in range(1,999):
                 if os.path.exists("./paginas/exec1" + pagExtenso + ".pdf"):
                     os.remove("./paginas/exec1" + pagExtenso + ".pdf")
                     exec1PDF = False
-        if exec2PDF == True:
+
+        if exec2PDF == True: # Baixar as páginas do caderno Executivo 2
             exec2 = requests.get(link3)
             open("./paginas/exec2" + pagExtenso + ".pdf", "wb").write(exec2.content)
             f = open("./paginas/exec2" + pagExtenso + ".pdf", "r")
@@ -118,52 +119,56 @@ for pag in range(1,999):
                     os.remove("./paginas/exec2" + pagExtenso + ".pdf")
                     exec2PDF = False
 
-#UNIR PDFS
-
 caminho = ".\paginas"
 
 pdfs = sorted(os.listdir(caminho))
 
-# #CIDADE
+# CRIAÇÃO DOS CADERNOS UNINDO OS PDFS DAS PÁGINAS
+
+# CIDADE
 pdf_files = [f for f in pdfs if f.startswith("cidade")]
 merger = PdfFileMerger()
 for nomeArquivo in pdf_files:
     merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
 merger.write(os.path.join(caminho, f"Caderno_cidade_{diaExtenso}_{mes}.pdf"))
 
-#EXEC1
+# EXEC1
 pdf_files = [f for f in pdfs if f.startswith("exec1")]
 merger = PdfFileMerger()
 for nomeArquivo in pdf_files:
     merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
 merger.write(os.path.join(caminho, f"Caderno_exec1_{diaExtenso}_{mes}.pdf"))
 
-#EXEC2
+# EXEC2
 pdf_files = [f for f in pdfs if f.startswith("exec2")]
 merger = PdfFileMerger()
 for nomeArquivo in pdf_files:
     merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
 merger.write(os.path.join(caminho, f"Caderno_exec2_{diaExtenso}_{mes}.pdf"))
 
+#EXCLUIR PDFS DE PÁGINAS
+
+pdf_files = [f for f in pdfs if f.startswith("cidade") or f.startswith("exec1") or f.startswith("exec2")]
+for nomeArquivo in pdf_files:
+    os.remove(os.path.join(caminho, nomeArquivo))
+
 mycursor.execute("SELECT id_associado, nome FROM associado")
 
 nomes = mycursor.fetchall()
+if nomes == []:
+    print("Nenhum associado cadastrado")
+    exit()
 #print(nomes)
 txt = ''
 
 
-#LER PDF CIDADE
+# FAZER A BUSCA NO PDF CIDADE E ENVIAR PARA O BANCO DE DADOS
 
 reader = PdfFileReader(f'./paginas/Caderno_cidade_{diaExtenso}_{mes}.pdf')
 data = f'{ano}-{mes}-{dia}'
 
-
 nomeTeste = 'Marcela'
 txt = ''
-
-def formatar(n):
-    a = 4 - len(str(n))
-    return str(a * '0') + str(n)
 
 for i in range(reader.getNumPages()):
     pagina = reader.getPage(i)
@@ -177,7 +182,7 @@ for i in range(reader.getNumPages()):
                 #txt += f"Página: Cidade\nPágina: {numpag}\nLink:{link1}\nParágrafo: {paragrafo}"
                 mycursor.execute(f'INSERT INTO email VALUES ( 0, {nome[0]}, "{paragrafo}", "{link1}", "{data}", 0);')
 
-#LER PDF EXECUTIVO 1
+# FAZER A BUSCA NO PDF EXEC1 E ENVIAR PARA O BANCO DE DADOS
 
 reader = PdfFileReader(f'./paginas/Caderno_exec1_{diaExtenso}_{mes}.pdf')
 
@@ -192,7 +197,7 @@ for i in range(reader.getNumPages()):
                 #txt += f"Página: Executivo 1\nPágina: {numpag}\nLink:{link2}\nParágrafo: {paragrafo}"
                 mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link2}", "{data}", 0)')
 
-#LER PDF EXECUTIVO 2
+# FAZER A BUSCA NO PDF EXEC2 E ENVIAR PARA O BANCO DE DADOS
 
 reader = PdfFileReader(f'./paginas/Caderno_exec2_{diaExtenso}_{mes}.pdf')
 
@@ -207,15 +212,13 @@ for i in range(reader.getNumPages()):
                 #txt += f"Página: Executivo 2\nPágina: {numpag}\nLink:{link3}\nParágrafo: {paragrafo}"
                 mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link3}", "{data}", 0)')
 
-mydb.commit()
+mydb.commit() # :D
 
-# TRANSFORMA EM TXT -
+# TRANSFORMAR EM TXT -
 
-with Path(f'_{diaExtenso}_{mes}.txt').open(mode = 'w', encoding='utf-8') as output_file:
-    output_file.write(txt)
-
-# RETORNAR JSON
+# with Path(f'_{diaExtenso}_{mes}.txt').open(mode = 'w', encoding='utf-8') as output_file:
+#     output_file.write(txt)
 
 print("\nACABOU\n")
 
-print(datetime.now().strftime("%M:%S"))
+#print(datetime.now().strftime("%M:%S")) #Mostrar o horário de término de execução do script
