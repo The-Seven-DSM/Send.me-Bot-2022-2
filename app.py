@@ -153,6 +153,20 @@ if associados[0][0] == 0:
     mycursor.execute('INSERT INTO associado VALUES (0, "LIZABETH MESSIAS VIANA TELES", "lizabethteles@gmail.com", "Feminino");')
     mycursor.execute('INSERT INTO associado VALUES (0, "ANA MARIA SOUZA DA COSTA", "anacosta@gmail.com", "Feminino");')
 
+    # 10 NOMES DO CADERNO EXECUTIVO 2 DO DIA 14/09/2022
+
+    mycursor.execute('INSERT INTO associado VALUES (0, "ANA RODRIGUES DE FREITAS", "anafreitas@gmail.com", "Feminino");')
+    mycursor.execute('INSERT INTO associado VALUES (0, "JOSÉ GERALDO POLON", "josepolon@gmail.com", "Masculino");')
+    mycursor.execute('INSERT INTO associado VALUES (0, "EDUARDO APARECIDO SANCHES", "eduardosanches@gmail.com", "Masculino");')
+    mycursor.execute('INSERT INTO associado VALUES (0, "MONICA SANDOVAL", "monicasandoval@gmail.com", "Feminino");')
+    mycursor.execute('INSERT INTO associado VALUES (0, "LUCIANA SCALOPPE DE ALCANTARA", "lucianaalcantara@gmail.com", "Feminino");')
+    mycursor.execute('INSERT INTO associado VALUES (0, "CARLOS ALBERTO GONÇALVES DA SILVA", "carlossilva@gmail.com", "Masculino");')
+    mycursor.execute('INSERT INTO associado VALUES (0, "LAÉRCIO AGOSTINHO FERREIRA", "laercioferreira@gmail.com", "Masculino");')
+    mycursor.execute('INSERT INTO associado VALUES (0, "VICTOR ROSSI MONTEIRO", "victormonteiro@gmail.com", "Masculino");')
+    mycursor.execute('INSERT INTO associado VALUES (0, "CARLOS MARCEL FLORIANO E SILVA", "carlossilva@gmail.com", "Masculino");')
+    mycursor.execute('INSERT INTO associado VALUES (0, "EDINILSON DE SOUZA SIMAO", "edinilsonsimao@gmail.com", "Masculino");')
+    mycursor.execute('INSERT INTO associado VALUES (0, "RAFAEL LUIZ CARVALHO CORREA", "rafaelcorrea@gmail.com", "Masculino");')
+
 mydb.commit()
 
 # BAIXAR PDFS DE HOJE - DIARIO OFICIAL 
