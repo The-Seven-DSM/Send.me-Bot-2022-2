@@ -2,6 +2,7 @@
 *.sql
 *.txt
 teste.py
+*.js
 
 !requirements.txt
 

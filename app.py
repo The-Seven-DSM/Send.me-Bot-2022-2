@@ -28,10 +28,12 @@ def formatar(n):
 
 # CONEXÃO MYSQL E CRIAÇÃO DO BANCO DE DADOS
 
+senha = "tuca123" # <------- COLOQUE AQUI A SENHA DO MYSQL #
+
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="tuca123" # <- SENHA DO MYSQL
+  password=senha
 )
 
 mycursor = mydb.cursor()
@@ -45,7 +47,7 @@ mycursor.execute("ALTER TABLE email ADD FOREIGN KEY (fk_id_associado) REFERENCES
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="tuca123", # <- SENHA DO MYSQL
+  password=senha, 
   database="API_a"
 )
 
@@ -55,7 +57,7 @@ mycursor = mydb.cursor()
 
 mycursor.execute("SELECT count(*) FROM associado;")
 associados = mycursor.fetchall()
-print(associados[0][0])
+#print(associados[0][0])
 if associados[0][0] == 0:
     mycursor.execute('INSERT INTO associado VALUES (0, "Adriana Bezerra da Silva", "adrianabezerra@gmail.com", "Feminino");')
     mycursor.execute('INSERT INTO associado VALUES (0, "Adriana da Silva Jacinto", "adrianada@gmail.com", "Feminino");')
@@ -186,7 +188,7 @@ for pag in range(1,9999):
     else:
         if not cidadePDF and not exec1PDF and not exec2PDF:
             break
-        print(pagExtenso)
+        #print(pagExtenso)
 
         if cidadePDF == True: # Baixar as páginas do caderno Cidade
             cidade = requests.get(link1)
@@ -194,7 +196,8 @@ for pag in range(1,9999):
             f = open("./paginas/cidade" + pagExtenso + ".pdf", "r")
             if f.readline()[0:8] != "%PDF-1.4":
                 if pagExtenso == "0001":
-                    print("Hoje não tem diário oficial")
+                    print('Hoje não tem caderno Cidade')
+                    cidadePDF = False
                 else:
                     print('Ultima página do caderno "Cidade": ', int(pagExtenso) - 1)
                 f.close()
@@ -209,7 +212,8 @@ for pag in range(1,9999):
 
             if f.readline()[0:8] != "%PDF-1.4":
                 if pagExtenso == "0001":
-                    print("Hoje não tem diário oficial")
+                    print("Hoje não tem caderno executivo 1")
+                    exec1PDF = False
                 else:
                     print('Ultima página do caderno "Executivo 1": ', int(pagExtenso) - 1)
                 f.close()
@@ -224,7 +228,8 @@ for pag in range(1,9999):
 
             if f.readline()[0:8] != "%PDF-1.4":
                 if pagExtenso == "0001":
-                    print("Hoje não tem diário oficial do executivo 2")
+                    print("Hoje não tem caderno executivo 2")
+                    exec2PDF = False
                 else:
                     print('Ultima página do caderno "Executivo 2": ', int(pagExtenso) - 1 )
                 f.close()
@@ -332,6 +337,6 @@ mydb.commit() # :D
 # with Path(f'_{diaExtenso}_{mes}.txt').open(mode = 'w', encoding='utf-8') as output_file:
 #     output_file.write(txt)
 
-print("\nACABOU\n")
+print("ACABOU")
 
 #print(datetime.now().strftime("%M:%S")) #Mostrar o horário de término de execução do script
