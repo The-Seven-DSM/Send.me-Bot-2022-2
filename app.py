@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 import requests
 import os
 import mysql.connector
@@ -12,11 +12,15 @@ d = datetime.now()
 
 ano = d.strftime("%Y")
 mes = d.strftime("%m")
-diaExtenso = d.strftime("%d") # STR
 meses = ['','Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
-dia = str(diaExtenso)
-if len(dia) == 1:
-    dia = "0" + dia
+
+dia = d.strftime("%d") # STR
+diaExtenso = str(dia)
+
+if len(diaExtenso) == 1:
+    diaExtenso = "0" + diaExtenso
+
+diaSemana = date(int(ano), int(mes), int(dia)).isocalendar()[2]
 
 cidadePDF = True
 exec1PDF = True
@@ -184,6 +188,19 @@ if associados[0][0] == 0:
     mycursor.execute("INSERT INTO associado VALUES (0, 'DIEFFERSON DOS SANTOS', 'dieffersonsantos@gmail.com', 'Masculino');")
     mycursor.execute("INSERT INTO associado VALUES (0, 'FELIPE DE ARAUJO SILVA', 'felipesilva@gmail.com', 'Masculino');")
 
+    # 10 NOMES DO CADERNO CIDADE DO DIA 16/09/2022
+
+    mycursor.execute("INSERT INTO associado VALUES (0, 'MOHAMAD ALI KADRI', 'mohamadkadri@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'DANIELLE RODRIGUES GARCIA BERCARIO', 'daniellebercario@gmail.com', 'Feminino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'MARCELO ANTONIO RIBEIRO', 'marceloribeiro@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'MAYARA CARDIA', 'mayaracardia@gmail.com', 'Feminino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'CELESTE DA CRUZ GONCALVES REGO', 'celesterego@gmail.com', 'Feminino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'MARIA LUCIA PRATA', 'mariaprata@gmail.com', 'Feminino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'JOAO MARQUES ALEGRIA', 'joaoalegria@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'PRISCILA FRIVOLI FRANCISCO MARQUES', 'priscilamarques@gmail.com', 'Feminino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'GIANES CRISTINA RUIZ SIMOES', 'gianessimoes@gmail.com', 'Feminino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'ANA CAROLINA DE SA GASPAR', 'anagaspar@gmail.com', 'Feminino');")
+
 mydb.commit()
 
 # BAIXAR PDFS DE HOJE - DIARIO OFICIAL 
@@ -192,13 +209,13 @@ for pag in range(1,9999):
 
     pagExtenso = formatar(pag)
 
-    link1 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + dia + "/cidade/pdf/pg_" + pagExtenso + ".pdf"
-    link2 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + dia + "/exec1/pdf/pg_" + pagExtenso + ".pdf"
-    link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + dia + "/exec2/pdf/pg_" + pagExtenso + ".pdf"
+    link1 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/cidade/pdf/pg_" + pagExtenso + ".pdf"
+    link2 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec1/pdf/pg_" + pagExtenso + ".pdf"
+    link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec2/pdf/pg_" + pagExtenso + ".pdf"
 
-    if (d.strftime("%w") == 0 or d.strftime("%w") == 1):
+    if (diaSemana == 7 or diaSemana == 1): # Se for domingo ou segunda, não tem diário oficial
         print('Hoje não tem diário oficial')
-        exit() # Se for domingo ou segunda, não tem diário oficial
+        exit() 
 
     else:
         if not cidadePDF and not exec1PDF and not exec2PDF:
@@ -298,7 +315,7 @@ txt = ''
 # FAZER A BUSCA NO PDF CIDADE E ENVIAR PARA O BANCO DE DADOS
 
 reader = PdfFileReader(f'./paginas/Caderno_cidade_{diaExtenso}_{mes}.pdf')
-data = f'{ano}-{mes}-{dia}'
+data = f'{ano}-{mes}-{diaExtenso}'
 
 nomeTeste = 'Marcela'
 txt = ''
@@ -310,7 +327,7 @@ for i in range(reader.getNumPages()):
     for paragrafo in conteudo.replace('"',"'").split('\n'):
         for nome in nomes:
             if nome[1].upper() in paragrafo.upper():
-                link1 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + dia + "/cidade/pdf/pg_" + str(numpag) + ".pdf"
+                link1 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/cidade/pdf/pg_" + str(numpag) + ".pdf"
                 #print(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link1}","{data}",0);')
                 #txt += f"Página: Cidade\nPágina: {numpag}\nLink:{link1}\nParágrafo: {paragrafo}"
                 mycursor.execute(f'INSERT INTO email VALUES ( 0, {nome[0]}, "{paragrafo}", "{link1}", "{data}", 0);')
@@ -326,7 +343,7 @@ for i in range(reader.getNumPages()):
     for paragrafo in conteudo.replace('"',"'").split('\n'):
         for nome in nomes:
             if nome[1].upper() in paragrafo.upper():
-                link2 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + dia + "/exec1/pdf/pg_" + str(numpag) + ".pdf"
+                link2 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec1/pdf/pg_" + str(numpag) + ".pdf"
                 #txt += f"Página: Executivo 1\nPágina: {numpag}\nLink:{link2}\nParágrafo: {paragrafo}"
                 mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link2}", "{data}", 0)')
 
@@ -341,7 +358,7 @@ for i in range(reader.getNumPages()):
     for paragrafo in conteudo.replace('"',"'").split('\n'):
         for nome in nomes:
             if nome[1].upper() in paragrafo.upper():
-                link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + dia + "/exec2/pdf/pg_" + str(numpag) + ".pdf"
+                link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec2/pdf/pg_" + str(numpag) + ".pdf"
                 #txt += f"Página: Executivo 2\nPágina: {numpag}\nLink:{link3}\nParágrafo: {paragrafo}"
                 mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link3}", "{data}", 0)')
 
