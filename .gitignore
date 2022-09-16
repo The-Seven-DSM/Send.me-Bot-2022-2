@@ -1,9 +1,10 @@
 /paginas/*.pdf
 *.sql
 *.txt
-teste.py
+*.py
 *.js
 
+!.app.py
 !requirements.txt
 
 # Created by https://www.toptal.com/developers/gitignore/api/node

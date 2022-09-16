@@ -28,7 +28,9 @@ def formatar(n):
 
 # CONEXÃO MYSQL E CRIAÇÃO DO BANCO DE DADOS
 
+
 senha = "tuca123" # <------- COLOQUE AQUI A SENHA DO MYSQL #
+
 
 mydb = mysql.connector.connect(
   host="localhost",
@@ -168,6 +170,19 @@ if associados[0][0] == 0:
     mycursor.execute('INSERT INTO associado VALUES (0, "CARLOS MARCEL FLORIANO E SILVA", "carlossilva@gmail.com", "Masculino");')
     mycursor.execute('INSERT INTO associado VALUES (0, "EDINILSON DE SOUZA SIMAO", "edinilsonsimao@gmail.com", "Masculino");')
     mycursor.execute('INSERT INTO associado VALUES (0, "RAFAEL LUIZ CARVALHO CORREA", "rafaelcorrea@gmail.com", "Masculino");')
+
+    # 10 NOMES DO CADERNO CIDADE DO DIA 15/09/2022
+
+    mycursor.execute("INSERT INTO associado VALUES (0, 'RAPHAEL CAETANO DA SILVA', 'raphaelsilva@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'RAPHAEL CARLOS DE ARAÚJO', 'raphaelaraújo@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'RAPHAEL ESPIRITO SANTO SALES', 'raphaelsales@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'RAPHAEL HENRIQUE PIRES SOUSA', 'raphaelsousa@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'DHYEGO VINICIUS DE MORAES SANTOS', 'dhyegosantos@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'DIAN SENAS VIEIRA', 'dianvieira@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'DIANNA DE LURDES MACEDO MACHADO', 'diannamachado@gmail.com', 'Feminino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'DIANNE DOS SANTOS PAULINO', 'diannepaulino@gmail.com', 'Feminino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'DIEFFERSON DOS SANTOS', 'dieffersonsantos@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'FELIPE DE ARAUJO SILVA', 'felipesilva@gmail.com', 'Masculino');")
 
 mydb.commit()
 
