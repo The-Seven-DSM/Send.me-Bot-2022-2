@@ -201,9 +201,26 @@ if associados[0][0] == 0:
     mycursor.execute("INSERT INTO associado VALUES (0, 'GIANES CRISTINA RUIZ SIMOES', 'gianessimoes@gmail.com', 'Feminino');")
     mycursor.execute("INSERT INTO associado VALUES (0, 'ANA CAROLINA DE SA GASPAR', 'anagaspar@gmail.com', 'Feminino');")
 
+    # 10 NOMES DO CADERNO CIDADE DO DIA 17/09/2022
+
+    mycursor.execute("INSERT INTO associado VALUES (0, 'MARTA VIDEIRA', 'martavideira@gmail.com', 'Feminino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'DENNET DE LIMA', 'dennetlima@gmail.com', 'Feminino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'JOSE CARLOS DA SILVA', 'josesilva@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'MEIRE LOPES TRAJAI', 'meiretrajai@gmail.com', 'Feminino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'ANTONIO CARLOS', 'antoniocarlos@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'FLÁVIO PEREIRA DOS SANTOS', 'fláviosantos@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'ASSIS MARTINI DOS SANTOS', 'assissantos@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'ROBERTO FIRMINO ALVES', 'robertoalves@gmail.com', 'Masculino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'APARECIDA COLETA', 'aparecidacoleta@gmail.com', 'Feminino');")
+    mycursor.execute("INSERT INTO associado VALUES (0, 'ALEIDE ALVES DE OLIVEIRA', 'aleideoliveira@gmail.com', 'Feminino');")
+
 mydb.commit()
 
 # BAIXAR PDFS DE HOJE - DIARIO OFICIAL 
+
+if (diaSemana == 7 or diaSemana == 1): # Se for domingo ou segunda, não tem diário oficial
+    print('Hoje não tem diário oficial')
+    exit()
 
 for pag in range(1,9999):
 
@@ -211,63 +228,59 @@ for pag in range(1,9999):
 
     link1 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/cidade/pdf/pg_" + pagExtenso + ".pdf"
     link2 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec1/pdf/pg_" + pagExtenso + ".pdf"
-    link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec2/pdf/pg_" + pagExtenso + ".pdf"
+    link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec2/pdf/pg_" + pagExtenso + ".pdf" 
 
-    if (diaSemana == 7 or diaSemana == 1): # Se for domingo ou segunda, não tem diário oficial
-        print('Hoje não tem diário oficial')
-        exit() 
 
-    else:
-        if not cidadePDF and not exec1PDF and not exec2PDF:
-            break
-        #print(pagExtenso)
+    if not cidadePDF and not exec1PDF and not exec2PDF:
+        break
+    #print(pagExtenso)
 
-        if cidadePDF == True: # Baixar as páginas do caderno Cidade
-            cidade = requests.get(link1)
-            open("./paginas/cidade" + pagExtenso + ".pdf", "wb").write(cidade.content)
-            f = open("./paginas/cidade" + pagExtenso + ".pdf", "r")
-            if f.readline()[0:8] != "%PDF-1.4":
-                if pagExtenso == "0001":
-                    print('Hoje não tem caderno Cidade')
-                    cidadePDF = False
-                else:
-                    print('Ultima página do caderno "Cidade": ', int(pagExtenso) - 1)
-                f.close()
-                if os.path.exists("./paginas/cidade" + pagExtenso + ".pdf"):
-                    os.remove("./paginas/cidade" + pagExtenso + ".pdf")
-                    cidadePDF = False
+    if cidadePDF == True: # Baixar as páginas do caderno Cidade
+        cidade = requests.get(link1)
+        open("./paginas/cidade" + pagExtenso + ".pdf", "wb").write(cidade.content)
+        f = open("./paginas/cidade" + pagExtenso + ".pdf", "r")
+        if f.readline()[0:8] != "%PDF-1.4":
+            if pagExtenso == "0001":
+                print('Hoje não tem caderno Cidade')
+                cidadePDF = False
+            else:
+                print('Ultima página do caderno "Cidade": ', int(pagExtenso) - 1)
+            f.close()
+            if os.path.exists("./paginas/cidade" + pagExtenso + ".pdf"):
+                os.remove("./paginas/cidade" + pagExtenso + ".pdf")
+                cidadePDF = False
 
-        if exec1PDF == True: #Baixar as páginas do caderno Executivo 1
-            exec1 = requests.get(link2)
-            open("./paginas/exec1" + pagExtenso + ".pdf", "wb").write(exec1.content)
-            f = open("./paginas/exec1" + pagExtenso + ".pdf", "r")
+    if exec1PDF == True: #Baixar as páginas do caderno Executivo 1
+        exec1 = requests.get(link2)
+        open("./paginas/exec1" + pagExtenso + ".pdf", "wb").write(exec1.content)
+        f = open("./paginas/exec1" + pagExtenso + ".pdf", "r")
 
-            if f.readline()[0:8] != "%PDF-1.4":
-                if pagExtenso == "0001":
-                    print("Hoje não tem caderno executivo 1")
-                    exec1PDF = False
-                else:
-                    print('Ultima página do caderno "Executivo 1": ', int(pagExtenso) - 1)
-                f.close()
-                if os.path.exists("./paginas/exec1" + pagExtenso + ".pdf"):
-                    os.remove("./paginas/exec1" + pagExtenso + ".pdf")
-                    exec1PDF = False
+        if f.readline()[0:8] != "%PDF-1.4":
+            if pagExtenso == "0001":
+                print("Hoje não tem caderno executivo 1")
+                exec1PDF = False
+            else:
+                print('Ultima página do caderno "Executivo 1": ', int(pagExtenso) - 1)
+            f.close()
+            if os.path.exists("./paginas/exec1" + pagExtenso + ".pdf"):
+                os.remove("./paginas/exec1" + pagExtenso + ".pdf")
+                exec1PDF = False
 
-        if exec2PDF == True: # Baixar as páginas do caderno Executivo 2
-            exec2 = requests.get(link3)
-            open("./paginas/exec2" + pagExtenso + ".pdf", "wb").write(exec2.content)
-            f = open("./paginas/exec2" + pagExtenso + ".pdf", "r")
+    if exec2PDF == True: # Baixar as páginas do caderno Executivo 2
+        exec2 = requests.get(link3)
+        open("./paginas/exec2" + pagExtenso + ".pdf", "wb").write(exec2.content)
+        f = open("./paginas/exec2" + pagExtenso + ".pdf", "r")
 
-            if f.readline()[0:8] != "%PDF-1.4":
-                if pagExtenso == "0001":
-                    print("Hoje não tem caderno executivo 2")
-                    exec2PDF = False
-                else:
-                    print('Ultima página do caderno "Executivo 2": ', int(pagExtenso) - 1 )
-                f.close()
-                if os.path.exists("./paginas/exec2" + pagExtenso + ".pdf"):
-                    os.remove("./paginas/exec2" + pagExtenso + ".pdf")
-                    exec2PDF = False
+        if f.readline()[0:8] != "%PDF-1.4":
+            if pagExtenso == "0001":
+                print("Hoje não tem caderno executivo 2")
+                exec2PDF = False
+            else:
+                print('Ultima página do caderno "Executivo 2": ', int(pagExtenso) - 1 )
+            f.close()
+            if os.path.exists("./paginas/exec2" + pagExtenso + ".pdf"):
+                os.remove("./paginas/exec2" + pagExtenso + ".pdf")
+                exec2PDF = False
 
 caminho = ".\paginas"
 
