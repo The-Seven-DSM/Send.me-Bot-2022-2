@@ -33,7 +33,7 @@ def formatar(n):
 # CONEXÃO MYSQL E CRIAÇÃO DO BANCO DE DADOS
 
 
-senha = "tuca123" # <------- COLOQUE AQUI A SENHA DO MYSQL #
+senha = "admin" # <------- COLOQUE AQUI A SENHA DO MYSQL #
 
 
 mydb = mysql.connector.connect(
@@ -47,7 +47,7 @@ mycursor.execute("CREATE DATABASE IF NOT EXISTS API_a;")
 mycursor.execute("use API_a;")
 mycursor.execute("CREATE table IF NOT EXISTS associado( id_associado int not null primary key auto_increment, nome varchar(55), email varchar(256), sexo varchar(10));")
 mycursor.execute("Create table IF NOT EXISTS backoffice(id_back int not null primary key auto_increment, nome varchar(55));")
-mycursor.execute("Create table IF NOT EXISTS email( id_email int not null primary key auto_increment, fk_id_associado int, corpo text(19999), pagina varchar(999), dataenvio datetime(6), estado bool );")
+mycursor.execute("Create table IF NOT EXISTS email( id_email int not null primary key auto_increment, fk_id_associado int, corpo text(19999), pagina varchar(999), dataenvio datetime(6), estado bool , envio bool);")
 mycursor.execute("ALTER TABLE email ADD FOREIGN KEY (fk_id_associado) REFERENCES associado(id_associado);")
 
 mydb = mysql.connector.connect(
@@ -197,18 +197,26 @@ mycursor.execute("INSERT INTO associado VALUES (0, 'PRISCILA FRIVOLI FRANCISCO M
 mycursor.execute("INSERT INTO associado VALUES (0, 'GIANES CRISTINA RUIZ SIMOES', 'gianessimoes@gmail.com', 'Feminino');")
 mycursor.execute("INSERT INTO associado VALUES (0, 'ANA CAROLINA DE SA GASPAR', 'anagaspar@gmail.com', 'Feminino');")
 
-# 10 NOMES DO CADERNO CIDADE DO DIA 17/09/2022
+# 15 NOMES DO CADERNO CIDADE DO DIA 17/09/2022
 
 mycursor.execute("INSERT INTO associado VALUES (0, 'MARTA VIDEIRA', 'martavideira@gmail.com', 'Feminino');")
 mycursor.execute("INSERT INTO associado VALUES (0, 'DENNET DE LIMA', 'dennetlima@gmail.com', 'Feminino');")
 mycursor.execute("INSERT INTO associado VALUES (0, 'JOSE CARLOS DA SILVA', 'josesilva@gmail.com', 'Masculino');")
 mycursor.execute("INSERT INTO associado VALUES (0, 'MEIRE LOPES TRAJAI', 'meiretrajai@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'ANTONIO CARLOS', 'antoniocarlos@gmail.com', 'Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'ERINELZA FONTES DE SOUZA', 'erinelzasouza@gmail.com', 'Feminino');")
 mycursor.execute("INSERT INTO associado VALUES (0, 'FLÁVIO PEREIRA DOS SANTOS', 'fláviosantos@gmail.com', 'Masculino');")
 mycursor.execute("INSERT INTO associado VALUES (0, 'ASSIS MARTINI DOS SANTOS', 'assissantos@gmail.com', 'Masculino');")
 mycursor.execute("INSERT INTO associado VALUES (0, 'ROBERTO FIRMINO ALVES', 'robertoalves@gmail.com', 'Masculino');")
 mycursor.execute("INSERT INTO associado VALUES (0, 'APARECIDA COLETA', 'aparecidacoleta@gmail.com', 'Feminino');")
 mycursor.execute("INSERT INTO associado VALUES (0, 'ALEIDE ALVES DE OLIVEIRA', 'aleideoliveira@gmail.com', 'Feminino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'ANTONIO JOSE PINTO CORREA', 'antoniopinto@gmail.com', 'Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'LEIDIMAR PONCHIO DA COSTA', 'leidimarcosta@gmail.com', 'Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'MARIA DE FATIMA CONSALES', 'mariaconsales@gmail.com', 'Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'SERGIO DONATO CIPRESSO', 'sergiocipresso@gmail.com','Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'ANNA MARIA MICELI','annamiceli','Feminino');")
+
+
+
 
 # REMOVER NOMES DUPLICADOS
 
@@ -343,7 +351,7 @@ for i in range(reader.getNumPages()):
                 link1 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/cidade/pdf/pg_" + str(numpag) + ".pdf"
                 #print(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link1}","{data}",0);')
                 #txt += f"Página: Cidade\nPágina: {numpag}\nLink:{link1}\nParágrafo: {paragrafo}"
-                mycursor.execute(f'INSERT INTO email VALUES ( 0, {nome[0]}, "{paragrafo}", "{link1}", "{data}", 0);')
+                mycursor.execute(f'INSERT INTO email VALUES ( 0, {nome[0]}, "{paragrafo}", "{link1}", "{data}", 0, 0);')
 
 # FAZER A BUSCA NO PDF EXEC1 E ENVIAR PARA O BANCO DE DADOS
 
@@ -358,7 +366,7 @@ for i in range(reader.getNumPages()):
             if nome[1].upper() in paragrafo.upper():
                 link2 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec1/pdf/pg_" + str(numpag) + ".pdf"
                 #txt += f"Página: Executivo 1\nPágina: {numpag}\nLink:{link2}\nParágrafo: {paragrafo}"
-                mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link2}", "{data}", 0)')
+                mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link2}", "{data}", 0, 0)')
 
 # FAZER A BUSCA NO PDF EXEC2 E ENVIAR PARA O BANCO DE DADOS
 
@@ -373,7 +381,7 @@ for i in range(reader.getNumPages()):
             if nome[1].upper() in paragrafo.upper():
                 link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec2/pdf/pg_" + str(numpag) + ".pdf"
                 #txt += f"Página: Executivo 2\nPágina: {numpag}\nLink:{link3}\nParágrafo: {paragrafo}"
-                mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link3}", "{data}", 0)')
+                mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link3}", "{data}", 0, 0)')
 
 mydb.commit() # :D
 
