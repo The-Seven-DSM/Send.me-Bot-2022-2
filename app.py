@@ -197,7 +197,7 @@ mycursor.execute("INSERT INTO associado VALUES (0, 'PRISCILA FRIVOLI FRANCISCO M
 mycursor.execute("INSERT INTO associado VALUES (0, 'GIANES CRISTINA RUIZ SIMOES', 'gianessimoes@gmail.com', 'Feminino');")
 mycursor.execute("INSERT INTO associado VALUES (0, 'ANA CAROLINA DE SA GASPAR', 'anagaspar@gmail.com', 'Feminino');")
 
-# 15 NOMES DO CADERNO CIDADE DO DIA 17/09/2022
+# 26 NOMES DO CADERNO CIDADE DO DIA 17/09/2022
 
 mycursor.execute("INSERT INTO associado VALUES (0, 'MARTA VIDEIRA', 'martavideira@gmail.com', 'Feminino');")
 mycursor.execute("INSERT INTO associado VALUES (0, 'DENNET DE LIMA', 'dennetlima@gmail.com', 'Feminino');")
@@ -214,8 +214,17 @@ mycursor.execute("INSERT INTO associado VALUES (0, 'LEIDIMAR PONCHIO DA COSTA', 
 mycursor.execute("INSERT INTO associado VALUES (0, 'MARIA DE FATIMA CONSALES', 'mariaconsales@gmail.com', 'Masculino');")
 mycursor.execute("INSERT INTO associado VALUES (0, 'SERGIO DONATO CIPRESSO', 'sergiocipresso@gmail.com','Masculino');")
 mycursor.execute("INSERT INTO associado VALUES (0, 'ANNA MARIA MICELI','annamiceli','Feminino');")
-
-
+mycursor.execute("INSERT INTO associado VALUES (0, 'JOSELITO SALES DE SOUZA','joselitosouza@gmail.com','Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'BRUNO FREIRE DA SILVA','brunosilva@gmail.com','Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'MARCUS VINICIUS NUNES DA SILVA','marcussilva@gmail.com','Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'JOÃO ILDES BEFFA','joaobeffa@gmail.com','Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'JOSÉ CARLOS DE OLIVEIRA JÚNIOR','josejunior@gmail.com','Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'MARCEL WILLIAN OLIVEIRA DE SOUSA','marcelsouza@gmail.com','Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'JOSE ROBERTO DO NASCIMENTO','josenascimento@gmail.com','Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'LINDONEZE DA SILVA ARAUJO','lindonezearaujo@gmail.com','Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'LUIZ ROBERTO JOAO','luizjoao@gmail.com','Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'VALDINEY MARTINS COSTA','valdineycosta@gmail.com','Masculino');")
+mycursor.execute("INSERT INTO associado VALUES (0, 'ERMANO JOSE L MONTEIRO JUNIOR','ermanojunior@gmail.com','Masculino');")
 
 
 # REMOVER NOMES DUPLICADOS
