@@ -22,7 +22,7 @@ $ git clone https://github.com/The-Seven-DSM/Send.me-Bot-2022-2.git
 
 # Acesse a pasta e inicie o projeto
 $ cd Send.me-Bot-2022-2
-$ pip install -r requeriments.txt
+$ pip install -r requirements.txt
 $ Python app.py
 
 # Já dentro do projeto, localize o arquivo App.py 
