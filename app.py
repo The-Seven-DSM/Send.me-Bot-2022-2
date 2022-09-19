@@ -33,12 +33,12 @@ def formatar(n):
 # CONEXÃO MYSQL E CRIAÇÃO DO BANCO DE DADOS
 
 
+usuario = "root" # <------- COLOQUE AQUI O USUÁRIO DO MYSQL #
 senha = "admin" # <------- COLOQUE AQUI A SENHA DO MYSQL #
-
 
 mydb = mysql.connector.connect(
   host="localhost",
-  user="root",
+  user=usuario,
   password=senha
 )
 
@@ -52,7 +52,7 @@ mycursor.execute("ALTER TABLE email ADD FOREIGN KEY (fk_id_associado) REFERENCES
 
 mydb = mysql.connector.connect(
   host="localhost",
-  user="root",
+  user=usuario,
   password=senha, 
   database="API_a"
 )
