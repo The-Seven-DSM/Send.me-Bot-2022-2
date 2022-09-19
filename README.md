@@ -20,13 +20,13 @@ Com o [Python](https://www.python.org/downloads/) instalado em sua máquina, uti
 # Baixe ou clone este repositório
 $ git clone https://github.com/The-Seven-DSM/Send.me-Bot-2022-2.git
 
+# Já dentro do projeto, localize o arquivo App.py 
+# Nas linhas 36 e 37 altere o campo usuario e senha para suas credenciais do MySQL 
+
 # Acesse a pasta e inicie o projeto
 $ cd Send.me-Bot-2022-2
 $ pip install -r requirements.txt
 $ Python app.py
-
-# Já dentro do projeto, localize o arquivo App.py 
-# Nas linhas 36 e 37 altere o campo usuario e senha para suas credenciais do MySQL 
 ```
 
 Esses comandos irá iniciar o bot da aplicação. Caso queira rodar a aplicação por completo baixe os repositórios [BackEnd](https://github.com/The-Seven-DSM/Send.me-BackEnd-2022-2) e [FrontEnd](https://github.com/The-Seven-DSM/Send.me-FrontEnd-2022-2) e siga suas intruções.
