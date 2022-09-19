@@ -8,7 +8,7 @@
 
 Este repositório é referente ao bot da aplicação, onde nele está presente os recuros referentes ao:
 
-- **Leitura e Armazenamento dos PDF**: faz o donwload e filtra as informações vindas do PDF e as insere no banco de dados
+- **Leitura e Armazenamento dos PDF**: faz o download e filtra as informações vindas do PDF e as insere no banco de dados
 
 ### :gear: Como utilizar
 
