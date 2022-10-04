@@ -1,11 +1,10 @@
+# Arquivos de teste, páginas pdf e outros arquivos
 /paginas/*.pdf
 *.sql
-*.txt
 *.py
 *.js
-
+formatado.txt
 !.app.py
-!requirements.txt
 
 # Created by https://www.toptal.com/developers/gitignore/api/node
 # Edit at https://www.toptal.com/developers/gitignore?templates=node

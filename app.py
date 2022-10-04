@@ -14,7 +14,7 @@ ano = d.strftime("%Y")
 mes = d.strftime("%m")
 meses = ['','Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
-dia = d.strftime("%d") # STR
+dia = "1"#d.strftime("%d") # STR
 diaExtenso = str(dia)
 
 if len(diaExtenso) == 1:
@@ -34,7 +34,7 @@ def formatar(n):
 
 
 usuario = "root" # <------- COLOQUE AQUI O USUÁRIO DO MYSQL #
-senha = "admin" # <------- COLOQUE AQUI A SENHA DO MYSQL #
+senha = "tuca123" # <------- COLOQUE AQUI A SENHA DO MYSQL #
 
 mydb = mysql.connector.connect(
   host="localhost",
@@ -59,177 +59,17 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 
-#   CRIAÇÃO DA BASE DE DADOS COM PROFESSORES DA FATEC
+# CRIAÇÃO DA BASE DE DADOS
 
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "ADRIANA BEZERRA DA SILVA", "ADRIANABEZERRA@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "ADRIANA DA SILVA JACINTO", "ADRIANADA@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "AGLIBERTO DO SOCORRO CHAGAS", "AGLIBERTODO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "ALFRED MAKOTO KABAYAMA", "ALFREDMAKOTO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "ANA CECÍLIA RODRIGUES MEDEIROS", "ANACECÍLIA@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "ANA MARIA PEREIRA", "ANAMARIA@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "ANDRÉ HASSESSIAN", "ANDRÉHASSESSIAN@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "ANTONIO WELLINGTON SALES RIOS", "ANTONIOWELLINGTON@GMAIL.COM", "MASCULINO");')     
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "ANTÔNIO EGYDIO SÃO TIAGO GRAÇA", "ANTÔNIOEGYDIO@GMAIL.COM", "MASCULINO");')        
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "ARLEY FERREIRA DE SOUZA", "ARLEYFERREIRA@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "BRUNO PERUCHI TREVISAN", "BRUNOPERUCHI@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "CARLOS AUGUSTO LOMBARDI GARCIA", "CARLOSAUGUSTO@GMAIL.COM", "MASCULINO");')        
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "CARLOS EDUARDO BASTOS", "CARLOSEDUARDO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "CARLOS LINEU DE FARIA E ALVES", "CARLOSLINEU@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "CELSO DE OLIVEIRA", "CELSODE@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "CLÁUDIO ETELVINO DE LIMA", "CLÁUDIOETELVINO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "CÁSSIA CRISTINA BORDINI CINTRA", "CÁSSIACRISTINA@GMAIL.COM", "FEMININO");')        
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "CÍCERO SOARES DA SILVA", "CÍCEROSOARES@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "DANIELLE CRISTINA DE MORAIS AMORIM", "DANIELLECRISTINA@GMAIL.COM", "FEMININO");')  
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "DAWILMAR GUIMARÃES DE ARAÚJO", "DAWILMARGUIMARÃES@GMAIL.COM", "MASCULINO");')      
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "DERCY FÉLIX DA SILVA", "DERCYFÉLIX@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "DIOGO BRANQUINHO RAMOS", "DIOGOBRANQUINHO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "EDMAR DE QUEIRÓZ FIGUEIREDO", "EDMARDE@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "EDUARDO CLEMENTE DE MEDEIROS", "EDUARDOCLEMENTE@GMAIL.COM", "MASCULINO");')        
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "EDUARDO SAKAUE", "EDUARDOSAKAUE@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "EDUARDO DE CASTRO FAUSTINO COELHO", "EDUARDODE@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "ELIANE PENHA MERGULHÃO DIAS", "ELIANEPENHA@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "EMANUEL MINEDA CARNEIRO", "EMANUELMINEDA@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "FABIANA ELOISA PASSADOR", "FABIANAELOISA@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "FABIANO SABHA WALCZAK", "FABIANOSABHA@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "FABRÍCIO GALENDE MARQUES DE CARVALHO", "FABRÍCIOGALENDE@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "FELIX ARLINDO STROTTMANN", "FELIXARLINDO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "FERNANDO MASANORI ASHIKAGA", "FERNANDOMASANORI@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "FÁBIO JOSÉ SANTOS DE OLIVEIRA", "FÁBIOJOSÉ@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "GERALDO JOSÉ LOMBARDI DE SOUZA", "GERALDOJOSÉ@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "GERSON CARLOS FAVALLI", "GERSONCARLOS@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "GERSON DA PENHA NETO", "GERSONDA@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "GIULIANO ARAÚJO BERTOTI", "GIULIANOARAÚJO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "GUARACI LIMA DE MORAIS", "GUARACILIMA@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "HEIDE HELOISE BERNARDI", "HEIDEHELOISE@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "HERCULANO CAMARGO ORTIZ", "HERCULANOCAMARGO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "HUDSON ALBERTO BODE", "HUDSONALBERTO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "JEAN CARLOS LOURENÇO COSTA", "JEANCARLOS@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "JOARES LIDOVINO DOS REIS", "JOARESLIDOVINO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "JORGE TADAO MATSUSHIMA", "JORGETADAO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "JOSÉ JAÉTIS ROSÁRIO", "JOSÉJAÉTIS@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "JOSÉ WALMIR GONÇALVES DUQUE", "JOSÉWALMIR@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "JULIANA FORIN PASQUINI MARTINEZ", "JULIANAFORIN@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "KLEBER GELLI", "KLEBERGELLI@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "LEÔNIDAS LOPES DE MELO", "LEÔNIDASLOPES@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "LISE VIRGÍNIA VIEIRA DE AZEVEDO", "LISEVIRGÍNIA@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "LUCAS GIOVANETTI", "LUCASGIOVANETTI@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "LUCAS GONÇALVES NADALETE", "LUCASGONÇALVES@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "LUIZ ALBERTO NOLASCO FONSECA", "LUIZALBERTO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "LUIZ ANTÔNIO TOZI", "LUIZANTÔNIO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "MANOEL ROMAN FILHO", "MANOELROMAN@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "MARCOS ALLAN FERREIRA GONÇALVES", "MARCOSALLAN@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "MARCOS DA SILVA E SOUZA", "MARCOSDA@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "MARCUS VINÍCIUS DO NASCIMENTO", "MARCUSVINÍCIUS@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "MARIA GORETI LOPES CEPINHO", "MARIAGORETI@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "MARIA SUELENA SANTIAGO", "MARIASUELENA@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "MARLUCE GAVIÃO SACRAMENTO DIAS", "MARLUCEGAVIÃO@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "NANCI DE OLIVEIRA", "NANCIDE@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "NEWTON EIZO YAMADA", "NEWTONEIZO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "NILO CASTRO DOS SANTOS", "NILOCASTRO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "NILO JERÔNIMO VIEIRA", "NILOJERÔNIMO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "REINALDO FAGUNDES DOS SANTOS", "REINALDOFAGUNDES@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "REINALDO GEN ICHIRO ARAKAKI", "REINALDOGEN@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "REINALDO VIVEIROS CARRARO", "REINALDOVIVEIROS@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "RENATA CRISTIANE FUSVERK DA SILVA", "RENATACRISTIANE@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "RENATO GALVÃO DA SILVEIRA MUSSI", "RENATOGALVÃO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "RISLEIDE LÚCIA DOS SANTOS", "RISLEIDELÚCIA@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "RITA DE CÁSSIA MENDONÇA SALES CONTINI", "RITADE@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "RODRIGO ELIAS PEREIRA", "RODRIGOELIAS@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "ROQUE ANTÔNIO DE MOURA", "ROQUEANTÔNIO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "RUBENS BARRETO DA SILVA", "RUBENSBARRETO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "SANTIAGO MARTIN LUGONES", "SANTIAGOMARTIN@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "SANZARA NHIAAIA JARDIM COSTA HASSMANN", "SANZARANHIAAIA@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "TERESINHA DE FÁTIMA NOGUEIRA", "TERESINHADE@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "TIAGO CRISTOFER AGUZZOLI COLOMBO", "TIAGOCRISTOFER@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "VERA LUCIA MONTEIRO", "VERALUCIA@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "VIVIANE RIBEIRO DE SIQUEIRA", "VIVIANERIBEIRO@GMAIL.COM", "FEMININO");')
+base = open("base_de_dados.txt", "r", encoding = "utf8")
 
-# 10 NOMES DO CADERNO CIDADE DO DIA 13/09/2022
-
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "RENATA RODRIGUES INÁCIO ELEUTÉRIO", "RENATARODRIGUES@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "ANA MARILIA DUMONT FERREIRA", "ANAFERREIRA@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "SILVIA REGINA DA ROSA VIDIGAL", "SILVIAVIDIGAL@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "GUSTAVO DO NASCIMENTO MENDES", "GUSTAVOMENDES@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "AMANDA SANTANA DOS SANTOS", "AMANDASANTOS@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "CINTIA FERREIRA LOUREIRO", "CINTIALOUREIRO@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "NUCCIA JULIA DI PRIOLO", "NUCCIAPRIOLO@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "MARCELO MEDEIROS CARVALHO", "MARCELOCARVALHO@GMAIL.COM", "MASCULINO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "LIZABETH MESSIAS VIANA TELES", "LIZABETHTELES@GMAIL.COM", "FEMININO");')
-mycursor.execute('INSERT INTO ASSOCIADO VALUES (0, "ANA MARIA SOUZA DA COSTA", "ANACOSTA@GMAIL.COM", "FEMININO");')
-
-# 10 NOMES DO CADERNO EXECUTIVO 2 DO DIA 14/09/2022
-
-mycursor.execute('INSERT INTO associado VALUES (0, "ANA RODRIGUES DE FREITAS", "anafreitas@gmail.com", "Feminino");')
-mycursor.execute('INSERT INTO associado VALUES (0, "JOSÉ GERALDO POLON", "josepolon@gmail.com", "Masculino");')
-mycursor.execute('INSERT INTO associado VALUES (0, "EDUARDO APARECIDO SANCHES", "eduardosanches@gmail.com", "Masculino");')
-mycursor.execute('INSERT INTO associado VALUES (0, "MONICA SANDOVAL", "monicasandoval@gmail.com", "Feminino");')
-mycursor.execute('INSERT INTO associado VALUES (0, "LUCIANA SCALOPPE DE ALCANTARA", "lucianaalcantara@gmail.com", "Feminino");')
-mycursor.execute('INSERT INTO associado VALUES (0, "CARLOS ALBERTO GONÇALVES DA SILVA", "carlossilva@gmail.com", "Masculino");')
-mycursor.execute('INSERT INTO associado VALUES (0, "LAÉRCIO AGOSTINHO FERREIRA", "laercioferreira@gmail.com", "Masculino");')
-mycursor.execute('INSERT INTO associado VALUES (0, "VICTOR ROSSI MONTEIRO", "victormonteiro@gmail.com", "Masculino");')
-mycursor.execute('INSERT INTO associado VALUES (0, "CARLOS MARCEL FLORIANO E SILVA", "carlossilva@gmail.com", "Masculino");')
-mycursor.execute('INSERT INTO associado VALUES (0, "EDINILSON DE SOUZA SIMAO", "edinilsonsimao@gmail.com", "Masculino");')
-mycursor.execute('INSERT INTO associado VALUES (0, "RAFAEL LUIZ CARVALHO CORREA", "rafaelcorrea@gmail.com", "Masculino");')
-
-# 10 NOMES DO CADERNO CIDADE DO DIA 15/09/2022
-
-mycursor.execute("INSERT INTO associado VALUES (0, 'RAPHAEL CAETANO DA SILVA', 'raphaelsilva@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'RAPHAEL CARLOS DE ARAÚJO', 'raphaelaraújo@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'RAPHAEL ESPIRITO SANTO SALES', 'raphaelsales@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'RAPHAEL HENRIQUE PIRES SOUSA', 'raphaelsousa@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'DHYEGO VINICIUS DE MORAES SANTOS', 'dhyegosantos@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'DIAN SENAS VIEIRA', 'dianvieira@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'DIANNA DE LURDES MACEDO MACHADO', 'diannamachado@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'DIANNE DOS SANTOS PAULINO', 'diannepaulino@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'DIEFFERSON DOS SANTOS', 'dieffersonsantos@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'FELIPE DE ARAUJO SILVA', 'felipesilva@gmail.com', 'Masculino');")
-
-# 10 NOMES DO CADERNO CIDADE DO DIA 16/09/2022
-
-mycursor.execute("INSERT INTO associado VALUES (0, 'MOHAMAD ALI KADRI', 'mohamadkadri@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'DANIELLE RODRIGUES GARCIA BERCARIO', 'daniellebercario@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'MARCELO ANTONIO RIBEIRO', 'marceloribeiro@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'MAYARA CARDIA', 'mayaracardia@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'CELESTE DA CRUZ GONCALVES REGO', 'celesterego@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'MARIA LUCIA PRATA', 'mariaprata@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'JOAO MARQUES ALEGRIA', 'joaoalegria@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'PRISCILA FRIVOLI FRANCISCO MARQUES', 'priscilamarques@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'GIANES CRISTINA RUIZ SIMOES', 'gianessimoes@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'ANA CAROLINA DE SA GASPAR', 'anagaspar@gmail.com', 'Feminino');")
-
-# 26 NOMES DO CADERNO CIDADE DO DIA 17/09/2022
-
-mycursor.execute("INSERT INTO associado VALUES (0, 'MARTA VIDEIRA', 'martavideira@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'DENNET DE LIMA', 'dennetlima@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'JOSE CARLOS DA SILVA', 'josesilva@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'MEIRE LOPES TRAJAI', 'meiretrajai@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'ERINELZA FONTES DE SOUZA', 'erinelzasouza@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'FLÁVIO PEREIRA DOS SANTOS', 'fláviosantos@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'ASSIS MARTINI DOS SANTOS', 'assissantos@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'ROBERTO FIRMINO ALVES', 'robertoalves@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'APARECIDA COLETA', 'aparecidacoleta@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'ALEIDE ALVES DE OLIVEIRA', 'aleideoliveira@gmail.com', 'Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'ANTONIO JOSE PINTO CORREA', 'antoniopinto@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'LEIDIMAR PONCHIO DA COSTA', 'leidimarcosta@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'MARIA DE FATIMA CONSALES', 'mariaconsales@gmail.com', 'Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'SERGIO DONATO CIPRESSO', 'sergiocipresso@gmail.com','Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'ANNA MARIA MICELI','annamiceli','Feminino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'JOSELITO SALES DE SOUZA','joselitosouza@gmail.com','Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'BRUNO FREIRE DA SILVA','brunosilva@gmail.com','Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'MARCUS VINICIUS NUNES DA SILVA','marcussilva@gmail.com','Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'JOÃO ILDES BEFFA','joaobeffa@gmail.com','Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'JOSÉ CARLOS DE OLIVEIRA JÚNIOR','josejunior@gmail.com','Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'MARCEL WILLIAN OLIVEIRA DE SOUSA','marcelsouza@gmail.com','Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'JOSE ROBERTO DO NASCIMENTO','josenascimento@gmail.com','Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'LINDONEZE DA SILVA ARAUJO','lindonezearaujo@gmail.com','Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'LUIZ ROBERTO JOAO','luizjoao@gmail.com','Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'VALDINEY MARTINS COSTA','valdineycosta@gmail.com','Masculino');")
-mycursor.execute("INSERT INTO associado VALUES (0, 'ERMANO JOSE L MONTEIRO JUNIOR','ermanojunior@gmail.com','Masculino');")
-
+for linha in base:
+    if linha[0] != "#" and len(linha) > 3:
+        mycursor.execute(linha)
 
 # REMOVER NOMES DUPLICADOS
 
-mycursor.execute("DELETE t1 FROM associado t1 INNER JOIN associado t2  WHERE t1.id_associado > t2.id_associado AND t1.nome = t2.nome;")
+mycursor.execute("DELETE t1 FROM associado t1 INNER JOIN associado t2 WHERE t1.id_associado > t2.id_associado AND t1.nome = t2.nome AND t1.email = t2.email;")
 
 mydb.commit()
 
@@ -242,15 +82,22 @@ if (diaSemana == 7 or diaSemana == 1): # Se for domingo ou segunda, não tem di�
 for pag in range(1,9999):
 
     pagExtenso = formatar(pag)
+    #print(pagExtenso)
 
     link1 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/cidade/pdf/pg_" + pagExtenso + ".pdf"
     link2 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec1/pdf/pg_" + pagExtenso + ".pdf"
     link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec2/pdf/pg_" + pagExtenso + ".pdf" 
 
-
     if not cidadePDF and not exec1PDF and not exec2PDF:
         break
-    #print(pagExtenso)
+    
+    #Checar se já existe os cadernos
+    if os.path.exists(f".\paginas\Caderno_cidade_{diaExtenso}_{mes}.pdf"):
+        cidadePDF = False
+    if os.path.exists(f".\paginas\Caderno_exec1_{diaExtenso}_{mes}.pdf"):
+        exec1PDF = False
+    if os.path.exists(f".\paginas\Caderno_exec2_{diaExtenso}_{mes}.pdf"):
+        exec2PDF = False
 
     if cidadePDF == True: # Baixar as páginas do caderno Cidade
         cidade = requests.get(link1)
@@ -305,26 +152,29 @@ pdfs = sorted(os.listdir(caminho))
 
 # CRIAÇÃO DOS CADERNOS UNINDO OS PDFS DAS PÁGINAS
 
-# CIDADE
-pdf_files = [f for f in pdfs if f.startswith("cidade")]
-merger = PdfFileMerger()
-for nomeArquivo in pdf_files:
-    merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
-merger.write(os.path.join(caminho, f"Caderno_cidade_{diaExtenso}_{mes}.pdf"))
+# CADERNO CIDADE
+if not os.path.exists(f".\paginas\Caderno_cidade_{diaExtenso}_{mes}.pdf"):
+    pdf_files = [f for f in pdfs if f.startswith("cidade")]
+    merger = PdfFileMerger()
+    for nomeArquivo in pdf_files:
+        merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
+    merger.write(os.path.join(caminho, f"Caderno_cidade_{diaExtenso}_{mes}.pdf"))
 
-# EXEC1
-pdf_files = [f for f in pdfs if f.startswith("exec1")]
-merger = PdfFileMerger()
-for nomeArquivo in pdf_files:
-    merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
-merger.write(os.path.join(caminho, f"Caderno_exec1_{diaExtenso}_{mes}.pdf"))
+# CADENO EXECUTIVO 1
+if not os.path.exists(f".\paginas\Caderno_exec1_{diaExtenso}_{mes}.pdf"):
+    pdf_files = [f for f in pdfs if f.startswith("exec1")]
+    merger = PdfFileMerger()
+    for nomeArquivo in pdf_files:
+        merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
+    merger.write(os.path.join(caminho, f"Caderno_exec1_{diaExtenso}_{mes}.pdf"))
 
-# EXEC2
-pdf_files = [f for f in pdfs if f.startswith("exec2")]
-merger = PdfFileMerger()
-for nomeArquivo in pdf_files:
-    merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
-merger.write(os.path.join(caminho, f"Caderno_exec2_{diaExtenso}_{mes}.pdf"))
+# CADERNO EXECUTIVO 2
+if not os.path.exists(f".\paginas\Caderno_exec2_{diaExtenso}_{mes}.pdf"):
+    pdf_files = [f for f in pdfs if f.startswith("exec2")]
+    merger = PdfFileMerger()
+    for nomeArquivo in pdf_files:
+        merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
+    merger.write(os.path.join(caminho, f"Caderno_exec2_{diaExtenso}_{mes}.pdf"))
 
 #EXCLUIR PDFS DE PÁGINAS
 
@@ -341,14 +191,10 @@ if nomes == []:
 #print(nomes)
 txt = ''
 
-
 # FAZER A BUSCA NO PDF CIDADE E ENVIAR PARA O BANCO DE DADOS
 
 reader = PdfFileReader(f'./paginas/Caderno_cidade_{diaExtenso}_{mes}.pdf')
 data = f'{ano}-{mes}-{diaExtenso}'
-
-nomeTeste = 'Marcela'
-txt = ''
 
 for i in range(reader.getNumPages()):
     pagina = reader.getPage(i)
