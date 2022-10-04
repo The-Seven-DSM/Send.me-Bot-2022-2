@@ -14,7 +14,7 @@ ano = d.strftime("%Y")
 mes = d.strftime("%m")
 meses = ['','Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
-dia = "1"#d.strftime("%d") # STR
+dia = d.strftime("%d") # STR
 diaExtenso = str(dia)
 
 if len(diaExtenso) == 1:
@@ -32,9 +32,8 @@ def formatar(n):
 
 # CONEXÃO MYSQL E CRIAÇÃO DO BANCO DE DADOS
 
-
 usuario = "root" # <------- COLOQUE AQUI O USUÁRIO DO MYSQL #
-senha = "tuca123" # <------- COLOQUE AQUI A SENHA DO MYSQL #
+senha = "fatec" # <------- COLOQUE AQUI A SENHA DO MYSQL #
 
 mydb = mysql.connector.connect(
   host="localhost",
