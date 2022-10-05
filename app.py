@@ -8,6 +8,11 @@ import mysql.connector
 from PyPDF2 import PdfFileReader, PdfFileMerger
 from pathlib import Path
 
+# CONEXÃO DO MYSQL, INSIRA NAS VARIÁVEIS AS CREDENCIAIS
+
+usuario = "root" # <------- COLOQUE AQUI O USUÁRIO DO MYSQL ----------------------------#
+senha = "tuca123" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
+
 d = datetime.now()
 
 ano = d.strftime("%Y")
@@ -31,9 +36,6 @@ def formatar(n):
     return str(a * '0') + str(n)
 
 # CONEXÃO MYSQL E CRIAÇÃO DO BANCO DE DADOS
-
-usuario = "root" # <------- COLOQUE AQUI O USUÁRIO DO MYSQL #
-senha = "fatec" # <------- COLOQUE AQUI A SENHA DO MYSQL #
 
 mydb = mysql.connector.connect(
   host="localhost",
@@ -236,6 +238,10 @@ for i in range(reader.getNumPages()):
                 link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec2/pdf/pg_" + str(numpag) + ".pdf"
                 #txt += f"Página: Executivo 2\nPágina: {numpag}\nLink:{link3}\nParágrafo: {paragrafo}"
                 mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link3}", "{data}", 0, 0)')
+
+# EXCLUIR EMAILS REPETIDOS DO BANCO DE DADOS
+
+mycursor.execute("DELETE t1 FROM email t1 INNER JOIN email t2 WHERE t1.id_email < t2.id_email AND t1.fk_id_associado = t2.fk_id_associado AND t1.corpo = t2.corpo AND t1.pagina = t2.pagina")
 
 mydb.commit() # :D
 
