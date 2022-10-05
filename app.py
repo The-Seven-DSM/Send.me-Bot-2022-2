@@ -2,11 +2,7 @@ from datetime import datetime, date
 import requests
 import os
 import mysql.connector
-
-#print(datetime.now().strftime("%M:%S")) #Mostrar o horário que começa a execução do script
-
 from PyPDF2 import PdfFileReader, PdfFileMerger
-from pathlib import Path
 
 # CONEXÃO DO MYSQL, INSIRA NAS VARIÁVEIS AS CREDENCIAIS
 
@@ -190,66 +186,108 @@ if nomes == []:
     print("Nenhum associado cadastrado")
     exit()
 #print(nomes)
-txt = ''
+
+data = f'{ano}-{mes}-{diaExtenso}'
 
 # FAZER A BUSCA NO PDF CIDADE E ENVIAR PARA O BANCO DE DADOS
 
 reader = PdfFileReader(f'./paginas/Caderno_cidade_{diaExtenso}_{mes}.pdf')
-data = f'{ano}-{mes}-{diaExtenso}'
-
 for i in range(reader.getNumPages()):
     pagina = reader.getPage(i)
     numpag = formatar(i + 1)
     conteudo = pagina.extractText()
-    for paragrafo in conteudo.replace('"',"'").split('\n'):
+    for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
         for nome in nomes:
             if nome[1].upper() in paragrafo.upper():
+
+                #print(paragrafo.upper().index(nome[1].upper()))
+                if len(paragrafo) > 2500:
+                    dividido = paragrafo.upper().split(nome[1].upper(), 1)
+                    if len(dividido[0]) > 1000:
+                        paragrafofim += dividido[0][-1000:] + nome[1]
+                    else:
+                        paragrafofim += dividido[0] + nome[1]
+                    if len(dividido[1]) > 1000:
+                        paragrafofim += dividido[1][:1000]
+                    else:
+                        paragrafofim += dividido[1]
+                else:
+                    paragrafofim = paragrafo
+
+                #print(f"len:{len(paragrafofim)} nome:{nome[1]}\n{paragrafofim}\n")
+
                 link1 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/cidade/pdf/pg_" + str(numpag) + ".pdf"
-                #print(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link1}","{data}",0);')
-                #txt += f"Página: Cidade\nPágina: {numpag}\nLink:{link1}\nParágrafo: {paragrafo}"
-                mycursor.execute(f'INSERT INTO email VALUES ( 0, {nome[0]}, "{paragrafo}", "{link1}", "{data}", 0, 0);')
+                mycursor.execute(f'INSERT INTO email VALUES ( 0, {nome[0]}, "{paragrafofim}", "{link1}", "{data}", 0, 0);')
+                paragrafofim = ""
 
 # FAZER A BUSCA NO PDF EXEC1 E ENVIAR PARA O BANCO DE DADOS
 
 reader = PdfFileReader(f'./paginas/Caderno_exec1_{diaExtenso}_{mes}.pdf')
-
 for i in range(reader.getNumPages()):
     pagina = reader.getPage(i)
     numpag = formatar(i + 1)
     conteudo = pagina.extractText()
-    for paragrafo in conteudo.replace('"',"'").split('\n'):
+    for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
         for nome in nomes:
             if nome[1].upper() in paragrafo.upper():
+
+                #print(paragrafo.upper().index(nome[1].upper()))
+                if len(paragrafo) > 2500:
+                    dividido = paragrafo.upper().split(nome[1].upper(), 1)
+                    if len(dividido[0]) > 1000:
+                        paragrafofim += dividido[0][-1000:] + nome[1]
+                    else:
+                        paragrafofim += dividido[0] + nome[1]
+                    if len(dividido[1]) > 1000:
+                        paragrafofim += dividido[1][:1000]
+                    else:
+                        paragrafofim += dividido[1]
+                else:
+                    paragrafofim = paragrafo
+
+                #print(f"len:{len(paragrafofim)} nome:{nome[1]}\n{paragrafofim}\n")
+
                 link2 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec1/pdf/pg_" + str(numpag) + ".pdf"
-                #txt += f"Página: Executivo 1\nPágina: {numpag}\nLink:{link2}\nParágrafo: {paragrafo}"
-                mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link2}", "{data}", 0, 0)')
+                mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafofim}","{link2}", "{data}", 0, 0)')
+                paragrafofim = ""
 
 # FAZER A BUSCA NO PDF EXEC2 E ENVIAR PARA O BANCO DE DADOS
 
 reader = PdfFileReader(f'./paginas/Caderno_exec2_{diaExtenso}_{mes}.pdf')
-
 for i in range(reader.getNumPages()):
     pagina = reader.getPage(i)
     numpag = formatar(i + 1)
     conteudo = pagina.extractText()
-    for paragrafo in conteudo.replace('"',"'").split('\n'):
+    for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
         for nome in nomes:
             if nome[1].upper() in paragrafo.upper():
+
+                #print(paragrafo.upper().index(nome[1].upper()))
+                if len(paragrafo) > 2500:
+                    dividido = paragrafo.upper().split(nome[1].upper(), 1)
+                    if len(dividido[0]) > 1000:
+                        paragrafofim += dividido[0][-1000:] + nome[1]
+                    else:
+                        paragrafofim += dividido[0] + nome[1]
+                    if len(dividido[1]) > 1000:
+                        paragrafofim += dividido[1][:1000]
+                    else:
+                        paragrafofim += dividido[1]
+                else:
+                    paragrafofim = paragrafo
+
+                #print(f"len:{len(paragrafofim)} nome:{nome[1]}\n{paragrafofim}\n")
+
                 link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec2/pdf/pg_" + str(numpag) + ".pdf"
-                #txt += f"Página: Executivo 2\nPágina: {numpag}\nLink:{link3}\nParágrafo: {paragrafo}"
-                mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafo}","{link3}", "{data}", 0, 0)')
+                mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafofim}","{link3}", "{data}", 0, 0)')
+                paragrafofim = ""
 
 # EXCLUIR EMAILS REPETIDOS DO BANCO DE DADOS
+
+mydb.commit()
 
 mycursor.execute("DELETE t1 FROM email t1 INNER JOIN email t2 WHERE t1.id_email < t2.id_email AND t1.fk_id_associado = t2.fk_id_associado AND t1.corpo = t2.corpo AND t1.pagina = t2.pagina")
 
 mydb.commit() # :D
 
-# TRANSFORMAR EM TXT -
-
-# with Path(f'_{diaExtenso}_{mes}.txt').open(mode = 'w', encoding='utf-8') as output_file:
-#     output_file.write(txt)
-
 print("ACABOU")
-
-#print(datetime.now().strftime("%M:%S")) #Mostrar o horário de término de execução do script
