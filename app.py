@@ -5,20 +5,17 @@ import mysql.connector
 from PyPDF2 import PdfFileReader, PdfFileMerger
 import time
 
-# FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
-
-zero = "0"
-
 # CONEXÃO DO MYSQL, INSIRA NAS VARIÁVEIS AS CREDENCIAIS
 
 usuario = "root" # <------- COLOQUE AQUI O USUÁRIO DO MYSQL ----------------------------#
-senha = "tuca123" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
+senha = "fatec" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
 
-while True:
+zero = "0"
+
+while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
     d = datetime.now()
     print(f"EXECUTANDO, AGUARDANDO 20:00, Hora atual: {zero * ( 2 - len( str( d.hour ) )) + str(d.hour)}:{zero * ( 2 - len( str( d.minute ) )) + str(d.minute)}:{zero * ( 2 - len( str( d.second ) )) + str(d.second)}")
-    time.sleep(30)
-    if d.hour == 22 and d.minute == 0: # <------- COLOQUE AQUI A HORA QUE DESEJA RODAR O SCRIPT
+    if d.hour == 22 and d.minute == 00: # <------- COLOQUE AQUI A HORA QUE DESEJA RODAR O SCRIPT
 
         print("INICIANDO APLICAÇÃO")
 
@@ -302,3 +299,6 @@ while True:
         mydb.commit() # :D
 
         print("FIM DA EXECUÇÃO!")
+
+    else:
+        time.sleep(30)
