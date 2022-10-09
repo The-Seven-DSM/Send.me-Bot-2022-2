@@ -5,11 +5,34 @@ import mysql.connector
 from PyPDF2 import PdfFileReader, PdfFileMerger
 import time
 
-# CONEXÃO DO MYSQL, INSIRA NAS VARIÁVEIS AS CREDENCIAIS
+# CONEXÃO DO MYSQL E CRIAÇÃO DO BANCO DE DADOS, INSIRA NAS VARIÁVEIS AS CREDENCIAIS
 
 usuario = "root" # <------- COLOQUE AQUI O USUÁRIO DO MYSQL ----------------------------#
 senha = "fatec" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
 horario = "20:00" # <------- COLOQUE AQUI O HORÁRIO QUE DESEJA QUE O SCRIPT RODE ---------------------------#
+
+mydb = mysql.connector.connect(
+host="localhost",
+user=usuario,
+password=senha
+)
+
+mycursor = mydb.cursor()
+mycursor.execute("CREATE DATABASE IF NOT EXISTS API_a;")
+mycursor.execute("use API_a;")
+mycursor.execute("CREATE table IF NOT EXISTS associado( id_associado int not null primary key auto_increment, nome varchar(55), email varchar(256), genero varchar(10), cpf varchar(12), rg varchar(10), datanascimento varchar(10) );")
+mycursor.execute("Create table IF NOT EXISTS backoffice(id_back int not null primary key auto_increment, nome varchar(55));")
+mycursor.execute("Create table IF NOT EXISTS email( id_email int not null primary key auto_increment, fk_id_associado int, corpo text(19999), pagina varchar(999), dataenvio datetime(6), estado bool , envio bool);")
+mycursor.execute("ALTER TABLE email ADD FOREIGN KEY (fk_id_associado) REFERENCES associado(id_associado);")
+
+mydb = mysql.connector.connect(
+host="localhost",
+user=usuario,
+password=senha, 
+database="API_a"
+)
+
+mycursor = mydb.cursor()
 
 zero = "0"
 hora = horario.split(":")[0]
@@ -18,6 +41,7 @@ minuto = horario.split(":")[1]
 while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
     d = datetime.now()
     print(f"EXECUTANDO, AGUARDANDO {hora}:{minuto}, Hora atual: {zero * ( 2 - len( str( d.hour ) )) + str(d.hour)}:{zero * ( 2 - len( str( d.minute ) )) + str(d.minute)}:{zero * ( 2 - len( str( d.second ) )) + str(d.second)}")
+
     if d.hour == int(hora) and d.minute == int(minuto): # <------- COLOQUE AQUI A HORA QUE DESEJA RODAR O SCRIPT
 
         print("INICIANDO APLICAÇÃO")
@@ -41,31 +65,6 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
         def formatar(n):
             a = 4 - len(str(n))
             return str(a * '0') + str(n)
-
-        # CONEXÃO MYSQL E CRIAÇÃO DO BANCO DE DADOS
-
-        mydb = mysql.connector.connect(
-        host="localhost",
-        user=usuario,
-        password=senha
-        )
-
-        mycursor = mydb.cursor()
-        mycursor.execute("CREATE DATABASE IF NOT EXISTS API_a;")
-        mycursor.execute("use API_a;")
-        mycursor.execute("CREATE table IF NOT EXISTS associado( id_associado int not null primary key auto_increment, nome varchar(55), email varchar(256), genero varchar(10), cpf varchar(12), rg varchar(10), datanascimento varchar(10) );")
-        mycursor.execute("Create table IF NOT EXISTS backoffice(id_back int not null primary key auto_increment, nome varchar(55));")
-        mycursor.execute("Create table IF NOT EXISTS email( id_email int not null primary key auto_increment, fk_id_associado int, corpo text(19999), pagina varchar(999), dataenvio datetime(6), estado bool , envio bool);")
-        mycursor.execute("ALTER TABLE email ADD FOREIGN KEY (fk_id_associado) REFERENCES associado(id_associado);")
-
-        mydb = mysql.connector.connect(
-        host="localhost",
-        user=usuario,
-        password=senha, 
-        database="API_a"
-        )
-
-        mycursor = mydb.cursor()
 
         # CRIAÇÃO DA BASE DE DADOS
 
@@ -306,11 +305,13 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
         time.sleep(60)
 
     else:
+
         # time sleep da hora atual até as 20:00:00
         falta = datetime.combine(date.today(), datetime.strptime(f'{zero * ( 2 - len( str( hora ) )) + str(hora)}:{zero * ( 2 - len( str( minuto ) )) + str(minuto)}:00', '%H:%M:%S').time()) - d
         falta = falta.total_seconds()
         if falta < 0:
-            falta = 86400 + (falta * -1) 
+            falta = 86400 + (falta * -1)
+
         #segundos em horas e minutos
         horas = int(falta // 3600)
         minutos = int((falta % 3600) // 60)
