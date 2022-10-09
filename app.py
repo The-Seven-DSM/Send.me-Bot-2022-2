@@ -15,7 +15,7 @@ zero = "0"
 while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
     d = datetime.now()
     print(f"EXECUTANDO, AGUARDANDO 20:00, Hora atual: {zero * ( 2 - len( str( d.hour ) )) + str(d.hour)}:{zero * ( 2 - len( str( d.minute ) )) + str(d.minute)}:{zero * ( 2 - len( str( d.second ) )) + str(d.second)}")
-    if d.hour == 22 and d.minute == 00: # <------- COLOQUE AQUI A HORA QUE DESEJA RODAR O SCRIPT
+    if d.hour == 17 and d.minute == 19: # <------- COLOQUE AQUI A HORA QUE DESEJA RODAR O SCRIPT
 
         print("INICIANDO APLICAÇÃO")
 
@@ -23,7 +23,7 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
         mes = d.strftime("%m")
         meses = ['','Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
-        dia = d.strftime("%d") # STR
+        dia = "8"#d.strftime("%d") # STR
         diaExtenso = str(dia)
 
         if len(diaExtenso) == 1:
@@ -207,7 +207,7 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
             for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
                 for nome in nomes:
                     if nome[1].upper() in paragrafo.upper():
-
+                        paragrafofim = ""
                         #print(paragrafo.upper().index(nome[1].upper()))
                         if len(paragrafo) > 2500:
                             dividido = paragrafo.upper().split(nome[1].upper(), 1)
@@ -225,8 +225,9 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
                         #print(f"len:{len(paragrafofim)} nome:{nome[1]}\n{paragrafofim}\n")
 
                         link1 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/cidade/pdf/pg_" + str(numpag) + ".pdf"
-                        mycursor.execute(f'INSERT INTO email VALUES ( 0, {nome[0]}, "{paragrafofim}", "{link1}", "{data}", 0, 0);')
-                        paragrafofim = ""
+                        #mycursor.execute(f'INSERT INTO email VALUES (0, {nome[0]}, "{paragrafofim}", "{link1}", "", 0, 0);')
+                        mycursor.execute(f'INSERT INTO email (id_email, fk_id_associado, corpo, pagina, estado, envio) VALUES (0, {nome[0]}, "{paragrafofim}", "{link1}", 0, 0) ') 
+                        
 
         # FAZER A BUSCA NO PDF EXEC1 E ENVIAR PARA O BANCO DE DADOS
 
@@ -238,7 +239,7 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
             for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
                 for nome in nomes:
                     if nome[1].upper() in paragrafo.upper():
-
+                        paragrafofim = ""
                         #print(paragrafo.upper().index(nome[1].upper()))
                         if len(paragrafo) > 2500:
                             dividido = paragrafo.upper().split(nome[1].upper(), 1)
@@ -256,8 +257,8 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
                         #print(f"len:{len(paragrafofim)} nome:{nome[1]}\n{paragrafofim}\n")
 
                         link2 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec1/pdf/pg_" + str(numpag) + ".pdf"
-                        mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafofim}","{link2}", "{data}", 0, 0)')
-                        paragrafofim = ""
+                        #mycursor.execute(f'INSERT INTO email VALUES (0, {nome[0]}, "{paragrafofim}", "{link2}", "", 0, 0)')
+                        mycursor.execute(f'INSERT INTO email (id_email, fk_id_associado, corpo, pagina, estado, envio) VALUES (0, {nome[0]}, "{paragrafofim}", "{link2}", 0, 0) ')                        
 
         # FAZER A BUSCA NO PDF EXEC2 E ENVIAR PARA O BANCO DE DADOS
 
@@ -269,7 +270,7 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
             for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
                 for nome in nomes:
                     if nome[1].upper() in paragrafo.upper():
-
+                        paragrafofim = ""
                         #print(paragrafo.upper().index(nome[1].upper()))
                         if len(paragrafo) > 2500:
                             dividido = paragrafo.upper().split(nome[1].upper(), 1)
@@ -287,8 +288,8 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
                         #print(f"len:{len(paragrafofim)} nome:{nome[1]}\n{paragrafofim}\n")
 
                         link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec2/pdf/pg_" + str(numpag) + ".pdf"
-                        mycursor.execute(f'INSERT INTO email VALUES (0,{nome[0]},"{paragrafofim}","{link3}", "{data}", 0, 0)')
-                        paragrafofim = ""
+                        #mycursor.execute(f'INSERT INTO email VALUES (0, {nome[0]}, "{paragrafofim}", "{link3}", "", 0, 0)')
+                        mycursor.execute(f'INSERT INTO email (id_email, fk_id_associado, corpo, pagina, estado, envio) VALUES (0, {nome[0]}, "{paragrafofim}", "{link3}", 0, 0) ')                        
 
         # EXCLUIR EMAILS REPETIDOS DO BANCO DE DADOS
 
