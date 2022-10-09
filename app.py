@@ -8,14 +8,17 @@ import time
 # CONEXÃO DO MYSQL, INSIRA NAS VARIÁVEIS AS CREDENCIAIS
 
 usuario = "root" # <------- COLOQUE AQUI O USUÁRIO DO MYSQL ----------------------------#
-senha = "admin" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
+senha = "fatec" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
+horario = "20:00" # <------- COLOQUE AQUI O HORÁRIO QUE DESEJA QUE O SCRIPT RODE ---------------------------#
 
 zero = "0"
+hora = horario.split(":")[0]
+minuto = horario.split(":")[1]
 
 while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
     d = datetime.now()
-    print(f"EXECUTANDO, AGUARDANDO 20:00, Hora atual: {zero * ( 2 - len( str( d.hour ) )) + str(d.hour)}:{zero * ( 2 - len( str( d.minute ) )) + str(d.minute)}:{zero * ( 2 - len( str( d.second ) )) + str(d.second)}")
-    if d.hour == 17 and d.minute == 19: # <------- COLOQUE AQUI A HORA QUE DESEJA RODAR O SCRIPT
+    print(f"EXECUTANDO, AGUARDANDO {hora}:{minuto}, Hora atual: {zero * ( 2 - len( str( d.hour ) )) + str(d.hour)}:{zero * ( 2 - len( str( d.minute ) )) + str(d.minute)}:{zero * ( 2 - len( str( d.second ) )) + str(d.second)}")
+    if d.hour == int(hora) and d.minute == int(minuto): # <------- COLOQUE AQUI A HORA QUE DESEJA RODAR O SCRIPT
 
         print("INICIANDO APLICAÇÃO")
 
@@ -300,6 +303,17 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
         mydb.commit() # :D
 
         print("FIM DA EXECUÇÃO!")
+        time.sleep(60)
 
     else:
-        time.sleep(30)
+        # time sleep da hora atual até as 20:00:00
+        falta = datetime.combine(date.today(), datetime.strptime(f'{zero * ( 2 - len( str( hora ) )) + str(hora)}:{zero * ( 2 - len( str( minuto ) )) + str(minuto)}:00', '%H:%M:%S').time()) - d
+        falta = falta.total_seconds()
+        if falta < 0:
+            falta = 86400 + (falta * -1) 
+        #segundos em horas e minutos
+        horas = int(falta // 3600)
+        minutos = int((falta % 3600) // 60)
+        segundos = int(falta % 60)
+        print(f'Faltam {horas} horas, {minutos} minutos e {segundos} segundos para a execução do programa.')
+        time.sleep(falta + 1)
