@@ -9,7 +9,7 @@ import time
 
 usuario = "root" # <------- COLOQUE AQUI O USUÁRIO DO MYSQL ----------------------------#
 senha = "admin" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
-horario = "21:29" # <------- COLOQUE AQUI O HORÁRIO QUE DESEJA QUE O SCRIPT RODE ---------------------------#
+horario = "20:00" # <------- COLOQUE AQUI O HORÁRIO QUE DESEJA QUE O SCRIPT RODE ---------------------------#
 
 mydb = mysql.connector.connect(
 host="localhost",
