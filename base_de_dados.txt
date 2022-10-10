@@ -209,12 +209,12 @@ INSERT INTO ASSOCIADO VALUES (0, "JOSE WILSON FAGUNDES LEDOINO", "joseledoino@gm
 #Insert de Backoffice
 INSERT INTO backoffice values (0,"adm","adm","adm");
 
-INSERT INTO backoffice values (0,"backoffice1","bo1@gmail","adm");
-INSERT INTO backoffice values (0,"backoffice2","bo2@gmail","adm");
-INSERT INTO backoffice values (0,"backoffice3","bo3@gmail","adm");
-INSERT INTO backoffice values (0,"backoffice4","bo4@gmail","adm");
-INSERT INTO backoffice values (0,"backoffice5","bo5@gmail","adm");
-INSERT INTO backoffice values (0,"backoffice6","bo6@gmail","adm");
-INSERT INTO backoffice values (0,"backoffice7","bo7@gmail","adm");
-INSERT INTO backoffice values (0,"backoffice8","bo8@gmail","adm");
-INSERT INTO backoffice values (0,"backoffice9","bo9@gmail","adm");
+INSERT INTO backoffice values (0,"backoffice1","adm","bo1@gmail");
+INSERT INTO backoffice values (0,"backoffice2","adm","bo2@gmail");
+INSERT INTO backoffice values (0,"backoffice3","adm","bo3@gmail");
+INSERT INTO backoffice values (0,"backoffice4","adm","bo4@gmail");
+INSERT INTO backoffice values (0,"backoffice5","adm","bo5@gmail");
+INSERT INTO backoffice values (0,"backoffice6","adm","bo6@gmail");
+INSERT INTO backoffice values (0,"backoffice7","adm","bo7@gmail");
+INSERT INTO backoffice values (0,"backoffice8","adm","bo8@gmail");
+INSERT INTO backoffice values (0,"backoffice9","adm","bo9@gmail");
