@@ -8,8 +8,8 @@ import time
 # CONEXÃO DO MYSQL E CRIAÇÃO DO BANCO DE DADOS, INSIRA NAS VARIÁVEIS AS CREDENCIAIS
 
 usuario = "root" # <------- COLOQUE AQUI O USUÁRIO DO MYSQL ----------------------------#
-senha = "fatec" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
-horario = "20:00" # <------- COLOQUE AQUI O HORÁRIO QUE DESEJA QUE O SCRIPT RODE ---------------------------#
+senha = "admin" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
+horario = "21:29" # <------- COLOQUE AQUI O HORÁRIO QUE DESEJA QUE O SCRIPT RODE ---------------------------#
 
 mydb = mysql.connector.connect(
 host="localhost",
