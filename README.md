@@ -21,7 +21,8 @@ Com o [Python](https://www.python.org/downloads/) instalado em sua máquina, uti
 $ git clone https://github.com/The-Seven-DSM/Send.me-Bot-2022-2.git
 
 # Já dentro do projeto, localize o arquivo app.py 
-# Nas linhas 13 e 14 altere os campos de usuario e senha para suas credenciais do MySQL 
+# Nas linhas 10 e 11 altere os campos de usuario e senha para suas credenciais do MySQL 
+# Já na linha 12 altere o campo caso queira que a aplicação rode em algum outro horário, por padrão está para 20:00
 
 # Acesse a pasta e inicie o projeto
 $ cd Send.me-Bot-2022-2

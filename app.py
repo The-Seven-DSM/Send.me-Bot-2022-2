@@ -50,7 +50,7 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
         mes = d.strftime("%m")
         meses = ['','Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
-        dia = "8"#d.strftime("%d") # STR
+        dia = d.strftime("%d") # STR
         diaExtenso = str(dia)
 
         if len(diaExtenso) == 1:
