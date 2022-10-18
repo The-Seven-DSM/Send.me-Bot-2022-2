@@ -8,14 +8,18 @@ import time
 # CONEXÃO DO MYSQL E CRIAÇÃO DO BANCO DE DADOS, INSIRA NAS VARIÁVEIS AS CREDENCIAIS
 
 usuario = "root" # <------- COLOQUE AQUI O USUÁRIO DO MYSQL ----------------------------#
-senha = "admin" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
+senha = "fatec" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
 horario = "20:00" # <------- COLOQUE AQUI O HORÁRIO QUE DESEJA QUE O SCRIPT RODE ---------------------------#
 
-mydb = mysql.connector.connect(
-host="localhost",
-user=usuario,
-password=senha
-)
+try:
+    mydb = mysql.connector.connect(
+    host="localhost",
+    user=usuario,
+    password=senha
+    )
+except:
+    print("Erro ao conectar ao banco de dados, verifique as credenciais")
+    exit()
 
 mycursor = mydb.cursor()
 mycursor.execute("CREATE DATABASE IF NOT EXISTS API_a;")
@@ -34,6 +38,7 @@ database="API_a"
 
 mycursor = mydb.cursor()
 
+caminho = ".\paginas"
 zero = "0"
 hora = horario.split(":")[0]
 minuto = horario.split(":")[1]
@@ -58,10 +63,6 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
 
         diaSemana = date(int(ano), int(mes), int(dia)).isocalendar()[2]
 
-        cidadePDF = True
-        exec1PDF = True
-        exec2PDF = True
-
         def formatar(n):
             a = 4 - len(str(n))
             return str(a * '0') + str(n)
@@ -74,224 +75,89 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
             if linha[0] != "#" and len(linha) > 3:
                 mycursor.execute(linha)
 
-        # REMOVER NOMES DUPLICADOS
+        # REMOVER NOMES DUPLICADOS E BACKOFFICE DUPLICADOS
 
+        mycursor.execute("DELETE t1 FROM backoffice t1 INNER JOIN backoffice t2 WHERE t1.id_back > t2.id_back AND t1.email = t2.email and t1.senha = t2.senha;")
         mycursor.execute("DELETE t1 FROM associado t1 INNER JOIN associado t2 WHERE t1.id_associado > t2.id_associado AND t1.nome = t2.nome AND t1.email = t2.email;")
 
         mydb.commit()
-
-        # BAIXAR PDFS DE HOJE - DIARIO OFICIAL 
 
         if (diaSemana == 7 or diaSemana == 1): # Se for domingo ou segunda, não tem diário oficial
             print('Hoje não tem diário oficial')
             exit()
 
-        for pag in range(1,9999):
+        # PEGAR TODOS OS NOMES E IDS DOS ASSOCIADOS
 
-            pagExtenso = formatar(pag)
-            #print(pagExtenso)
+        mycursor.execute("SELECT id_associado, nome FROM associado")
+        nomes = mycursor.fetchall()
 
-            link1 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/cidade/pdf/pg_" + pagExtenso + ".pdf"
-            link2 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec1/pdf/pg_" + pagExtenso + ".pdf"
-            link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec2/pdf/pg_" + pagExtenso + ".pdf" 
+        for caderno in ("cidade", "exec1", "exec2"):
 
-            if not cidadePDF and not exec1PDF and not exec2PDF:
-                break
-            
-            #Checar se já existe os cadernos
-            if os.path.exists(f".\paginas\Caderno_cidade_{diaExtenso}_{mes}.pdf"):
-                cidadePDF = False
-            if os.path.exists(f".\paginas\Caderno_exec1_{diaExtenso}_{mes}.pdf"):
-                exec1PDF = False
-            if os.path.exists(f".\paginas\Caderno_exec2_{diaExtenso}_{mes}.pdf"):
-                exec2PDF = False
+            for pag in range(1,9999): # BAIXAR PDFS DE HOJE DOS 3 CADERNOS - DIARIO OFICIAL 
 
-            if cidadePDF == True: # Baixar as páginas do caderno Cidade
-                cidade = requests.get(link1)
-                open("./paginas/cidade" + pagExtenso + ".pdf", "wb").write(cidade.content)
-                f = open("./paginas/cidade" + pagExtenso + ".pdf", "r")
+                if os.path.exists(f".\paginas\Caderno_{caderno}_{diaExtenso}_{mes}.pdf"):
+                    break
+                
+                pagExtenso = formatar(pag)
+
+                #print(f"Baixando página {pagExtenso} do caderno {caderno}")
+
+                link = f"http://diariooficial.imprensaoficial.com.br/doflash/prototipo/{ano}/{meses[int(mes)]}/{diaExtenso}/{caderno}/pdf/pg_{pagExtenso}.pdf"
+
+                pdf = requests.get(link)
+                open(f"./paginas/{caderno}_{pagExtenso}.pdf", "wb").write(pdf.content)
+                f = open(f"./paginas/{caderno}_{pagExtenso}.pdf", "r")
                 if f.readline()[0:8] != "%PDF-1.4":
                     if pagExtenso == "0001":
-                        print('Hoje não tem caderno Cidade')
-                        cidadePDF = False
+                        print(f'Hoje não tem caderno {caderno}')
+                        break
                     else:
-                        print('Ultima página do caderno "Cidade": ', int(pagExtenso) - 1)
+                        print(f'Ultima página do caderno "{caderno}": ', int(pagExtenso) - 1)
                     f.close()
-                    if os.path.exists("./paginas/cidade" + pagExtenso + ".pdf"):
-                        os.remove("./paginas/cidade" + pagExtenso + ".pdf")
-                        cidadePDF = False
+                    if os.path.exists(f"./paginas/{caderno}_{pagExtenso}.pdf"):
+                        os.remove(f"./paginas/{caderno}_{pagExtenso}.pdf")
+                        break
+                
+            # CRIAÇÃO DOS CADERNOS UNINDO OS PDFS DAS PÁGINAS
+            if not os.path.exists(f".\paginas\Caderno_{caderno}_{diaExtenso}_{mes}.pdf"):
+                pdfs = sorted(os.listdir(caminho))
+                pdf_files = [f for f in pdfs if f.startswith(caderno)]
+                merger = PdfFileMerger()
+                for nomeArquivo in pdf_files:
+                    merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
+                merger.write(os.path.join(caminho, f"Caderno_{caderno}_{diaExtenso}_{mes}.pdf"))
+                # LER OS PDFS E ENVIAR OS EMAILS
+                reader = PdfFileReader(f'./paginas/Caderno_{caderno}_{diaExtenso}_{mes}.pdf')
+                for i in range(reader.getNumPages()):
+                    pagina = reader.getPage(i)
+                    numpag = formatar(i + 1)
+                    conteudo = pagina.extractText()
+                    for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
+                        for nome in nomes:
+                            if nome[1].upper() in paragrafo.upper():
+                                paragrafofim = ""
+                                if len(paragrafo) > 2500:
+                                    dividido = paragrafo.upper().split(nome[1].upper(), 1)
+                                    if len(dividido[0]) > 1000:
+                                        paragrafofim += dividido[0][-1000:] + nome[1]
+                                    else:
+                                        paragrafofim += dividido[0] + nome[1]
+                                    if len(dividido[1]) > 1000:
+                                        paragrafofim += dividido[1][:1000]
+                                    else:
+                                        paragrafofim += dividido[1]
+                                else:
+                                    paragrafofim = paragrafo
 
-            if exec1PDF == True: #Baixar as páginas do caderno Executivo 1
-                exec1 = requests.get(link2)
-                open("./paginas/exec1" + pagExtenso + ".pdf", "wb").write(exec1.content)
-                f = open("./paginas/exec1" + pagExtenso + ".pdf", "r")
+                                link = f"http://diariooficial.imprensaoficial.com.br/doflash/prototipo/{ano}/{meses[int(mes)]}/{diaExtenso}/{caderno}/pdf/pg_{numpag}.pdf"
+                                mycursor.execute(f'INSERT INTO email (id_email, fk_id_associado, corpo, pagina, estado, envio) VALUES (0, {nome[0]}, "{paragrafofim}", "{link}", 0, 0) ') 
 
-                if f.readline()[0:8] != "%PDF-1.4":
-                    if pagExtenso == "0001":
-                        print("Hoje não tem caderno executivo 1")
-                        exec1PDF = False
-                    else:
-                        print('Ultima página do caderno "Executivo 1": ', int(pagExtenso) - 1)
-                    f.close()
-                    if os.path.exists("./paginas/exec1" + pagExtenso + ".pdf"):
-                        os.remove("./paginas/exec1" + pagExtenso + ".pdf")
-                        exec1PDF = False
 
-            if exec2PDF == True: # Baixar as páginas do caderno Executivo 2
-                exec2 = requests.get(link3)
-                open("./paginas/exec2" + pagExtenso + ".pdf", "wb").write(exec2.content)
-                f = open("./paginas/exec2" + pagExtenso + ".pdf", "r")
-
-                if f.readline()[0:8] != "%PDF-1.4":
-                    if pagExtenso == "0001":
-                        print("Hoje não tem caderno executivo 2")
-                        exec2PDF = False
-                    else:
-                        print('Ultima página do caderno "Executivo 2": ', int(pagExtenso) - 1 )
-                    f.close()
-                    if os.path.exists("./paginas/exec2" + pagExtenso + ".pdf"):
-                        os.remove("./paginas/exec2" + pagExtenso + ".pdf")
-                        exec2PDF = False
-
-        caminho = ".\paginas"
-
+        # EXCLUIR PDFS DAS PÁGINAS BAIXADAS
         pdfs = sorted(os.listdir(caminho))
-
-        # CRIAÇÃO DOS CADERNOS UNINDO OS PDFS DAS PÁGINAS
-
-        # CADERNO CIDADE
-        if not os.path.exists(f".\paginas\Caderno_cidade_{diaExtenso}_{mes}.pdf"):
-            pdf_files = [f for f in pdfs if f.startswith("cidade")]
-            merger = PdfFileMerger()
-            for nomeArquivo in pdf_files:
-                merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
-            merger.write(os.path.join(caminho, f"Caderno_cidade_{diaExtenso}_{mes}.pdf"))
-
-        # CADENO EXECUTIVO 1
-        if not os.path.exists(f".\paginas\Caderno_exec1_{diaExtenso}_{mes}.pdf"):
-            pdf_files = [f for f in pdfs if f.startswith("exec1")]
-            merger = PdfFileMerger()
-            for nomeArquivo in pdf_files:
-                merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
-            merger.write(os.path.join(caminho, f"Caderno_exec1_{diaExtenso}_{mes}.pdf"))
-
-        # CADERNO EXECUTIVO 2
-        if not os.path.exists(f".\paginas\Caderno_exec2_{diaExtenso}_{mes}.pdf"):
-            pdf_files = [f for f in pdfs if f.startswith("exec2")]
-            merger = PdfFileMerger()
-            for nomeArquivo in pdf_files:
-                merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
-            merger.write(os.path.join(caminho, f"Caderno_exec2_{diaExtenso}_{mes}.pdf"))
-
-        #EXCLUIR PDFS DE PÁGINAS
-
         pdf_files = [f for f in pdfs if f.startswith("cidade") or f.startswith("exec1") or f.startswith("exec2")]
         for nomeArquivo in pdf_files:
             os.remove(os.path.join(caminho, nomeArquivo))
-
-        mycursor.execute("SELECT id_associado, nome FROM associado")
-
-        nomes = mycursor.fetchall()
-        if nomes == []:
-            print("Nenhum associado cadastrado")
-            exit()
-        #print(nomes)
-
-        data = f'{ano}-{mes}-{diaExtenso}'
-
-        # FAZER A BUSCA NO PDF CIDADE E ENVIAR PARA O BANCO DE DADOS
-
-        reader = PdfFileReader(f'./paginas/Caderno_cidade_{diaExtenso}_{mes}.pdf')
-        for i in range(reader.getNumPages()):
-            pagina = reader.getPage(i)
-            numpag = formatar(i + 1)
-            conteudo = pagina.extractText()
-            for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
-                for nome in nomes:
-                    if nome[1].upper() in paragrafo.upper():
-                        paragrafofim = ""
-                        #print(paragrafo.upper().index(nome[1].upper()))
-                        if len(paragrafo) > 2500:
-                            dividido = paragrafo.upper().split(nome[1].upper(), 1)
-                            if len(dividido[0]) > 1000:
-                                paragrafofim += dividido[0][-1000:] + nome[1]
-                            else:
-                                paragrafofim += dividido[0] + nome[1]
-                            if len(dividido[1]) > 1000:
-                                paragrafofim += dividido[1][:1000]
-                            else:
-                                paragrafofim += dividido[1]
-                        else:
-                            paragrafofim = paragrafo
-
-                        #print(f"len:{len(paragrafofim)} nome:{nome[1]}\n{paragrafofim}\n")
-
-                        link1 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/cidade/pdf/pg_" + str(numpag) + ".pdf"
-                        #mycursor.execute(f'INSERT INTO email VALUES (0, {nome[0]}, "{paragrafofim}", "{link1}", "", 0, 0);')
-                        mycursor.execute(f'INSERT INTO email (id_email, fk_id_associado, corpo, pagina, estado, envio) VALUES (0, {nome[0]}, "{paragrafofim}", "{link1}", 0, 0) ') 
-                        
-
-        # FAZER A BUSCA NO PDF EXEC1 E ENVIAR PARA O BANCO DE DADOS
-
-        reader = PdfFileReader(f'./paginas/Caderno_exec1_{diaExtenso}_{mes}.pdf')
-        for i in range(reader.getNumPages()):
-            pagina = reader.getPage(i)
-            numpag = formatar(i + 1)
-            conteudo = pagina.extractText()
-            for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
-                for nome in nomes:
-                    if nome[1].upper() in paragrafo.upper():
-                        paragrafofim = ""
-                        #print(paragrafo.upper().index(nome[1].upper()))
-                        if len(paragrafo) > 2500:
-                            dividido = paragrafo.upper().split(nome[1].upper(), 1)
-                            if len(dividido[0]) > 1000:
-                                paragrafofim += dividido[0][-1000:] + nome[1]
-                            else:
-                                paragrafofim += dividido[0] + nome[1]
-                            if len(dividido[1]) > 1000:
-                                paragrafofim += dividido[1][:1000]
-                            else:
-                                paragrafofim += dividido[1]
-                        else:
-                            paragrafofim = paragrafo
-
-                        #print(f"len:{len(paragrafofim)} nome:{nome[1]}\n{paragrafofim}\n")
-
-                        link2 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec1/pdf/pg_" + str(numpag) + ".pdf"
-                        #mycursor.execute(f'INSERT INTO email VALUES (0, {nome[0]}, "{paragrafofim}", "{link2}", "", 0, 0)')
-                        mycursor.execute(f'INSERT INTO email (id_email, fk_id_associado, corpo, pagina, estado, envio) VALUES (0, {nome[0]}, "{paragrafofim}", "{link2}", 0, 0) ')                        
-
-        # FAZER A BUSCA NO PDF EXEC2 E ENVIAR PARA O BANCO DE DADOS
-
-        reader = PdfFileReader(f'./paginas/Caderno_exec2_{diaExtenso}_{mes}.pdf')
-        for i in range(reader.getNumPages()):
-            pagina = reader.getPage(i)
-            numpag = formatar(i + 1)
-            conteudo = pagina.extractText()
-            for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
-                for nome in nomes:
-                    if nome[1].upper() in paragrafo.upper():
-                        paragrafofim = ""
-                        #print(paragrafo.upper().index(nome[1].upper()))
-                        if len(paragrafo) > 2500:
-                            dividido = paragrafo.upper().split(nome[1].upper(), 1)
-                            if len(dividido[0]) > 1000:
-                                paragrafofim += dividido[0][-1000:] + nome[1]
-                            else:
-                                paragrafofim += dividido[0] + nome[1]
-                            if len(dividido[1]) > 1000:
-                                paragrafofim += dividido[1][:1000]
-                            else:
-                                paragrafofim += dividido[1]
-                        else:
-                            paragrafofim = paragrafo
-
-                        #print(f"len:{len(paragrafofim)} nome:{nome[1]}\n{paragrafofim}\n")
-
-                        link3 = "http://diariooficial.imprensaoficial.com.br/doflash/prototipo/" + ano + "/" + meses[int(mes)] + "/" + diaExtenso + "/exec2/pdf/pg_" + str(numpag) + ".pdf"
-                        #mycursor.execute(f'INSERT INTO email VALUES (0, {nome[0]}, "{paragrafofim}", "{link3}", "", 0, 0)')
-                        mycursor.execute(f'INSERT INTO email (id_email, fk_id_associado, corpo, pagina, estado, envio) VALUES (0, {nome[0]}, "{paragrafofim}", "{link3}", 0, 0) ')                        
 
         # EXCLUIR EMAILS REPETIDOS DO BANCO DE DADOS
 
