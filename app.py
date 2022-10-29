@@ -47,7 +47,7 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
     d = datetime.now()
     print(f"EXECUTANDO, AGUARDANDO {hora}:{minuto}, Hora atual: {zero * ( 2 - len( str( d.hour ) )) + str(d.hour)}:{zero * ( 2 - len( str( d.minute ) )) + str(d.minute)}:{zero * ( 2 - len( str( d.second ) )) + str(d.second)}")
 
-    if d.hour == int(hora) and d.minute == int(minuto): # <------- COLOQUE AQUI A HORA QUE DESEJA RODAR O SCRIPT
+    if d.hour == int(hora) and d.minute == int(minuto):
 
         print("INICIANDO APLICAÇÃO")
 
@@ -99,6 +99,7 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
                     break
                 
                 pagExtenso = formatar(pag)
+                SemCaderno = False
 
                 #print(f"Baixando página {pagExtenso} do caderno {caderno}")
 
@@ -110,6 +111,7 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
                 if f.readline()[0:8] != "%PDF-1.4":
                     if pagExtenso == "0001":
                         print(f'Hoje não tem caderno {caderno}')
+                        SemCaderno = True
                         break
                     else:
                         print(f'Ultima página do caderno "{caderno}": ', int(pagExtenso) - 1)
@@ -117,43 +119,44 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
                     if os.path.exists(f"./paginas/{caderno}_{pagExtenso}.pdf"):
                         os.remove(f"./paginas/{caderno}_{pagExtenso}.pdf")
                         break
-                
+            
             # CRIAÇÃO DOS CADERNOS UNINDO OS PDFS DAS PÁGINAS
-            if not os.path.exists(f".\paginas\Caderno_{caderno}_{diaExtenso}_{mes}.pdf"):
-                pdfs = sorted(os.listdir(caminho))
-                pdf_files = [f for f in pdfs if f.startswith(caderno)]
-                merger = PdfFileMerger()
-                for nomeArquivo in pdf_files:
-                    merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb"))
-                merger.write(os.path.join(caminho, f"Caderno_{caderno}_{diaExtenso}_{mes}.pdf"))
-                # LER OS PDFS E ENVIAR OS EMAILS
-                reader = PdfFileReader(f'./paginas/Caderno_{caderno}_{diaExtenso}_{mes}.pdf')
-                for i in range(reader.getNumPages()):
-                    pagina = reader.getPage(i)
-                    numpag = formatar(i + 1)
-                    conteudo = pagina.extractText()
-                    for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
-                        for nome in nomes:
-                            if nome[1].upper() in paragrafo.upper():
-                                paragrafofim = ""
-                                if len(paragrafo) > 2500:
-                                    dividido = paragrafo.upper().split(nome[1].upper(), 1)
-                                    if len(dividido[0]) > 1000:
-                                        paragrafofim += dividido[0][-1000:] + nome[1]
+            if not SemCaderno:
+                if not os.path.exists(f".\paginas\Caderno_{caderno}_{diaExtenso}_{mes}.pdf"):
+                    pdfs = sorted(os.listdir(caminho))
+                    pdf_files = [f for f in pdfs if f.startswith(caderno)]
+                    merger = PdfFileMerger()
+                    for nomeArquivo in pdf_files:
+                        merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb")) #AQUI DA ERRO
+                    merger.write(os.path.join(caminho, f"Caderno_{caderno}_{diaExtenso}_{mes}.pdf"))
+                    # LER OS PDFS E ENVIAR OS EMAILS
+                    reader = PdfFileReader(f'./paginas/Caderno_{caderno}_{diaExtenso}_{mes}.pdf')
+                    for i in range(reader.getNumPages()):
+                        pagina = reader.getPage(i)
+                        numpag = formatar(i + 1)
+                        conteudo = pagina.extractText()
+                        for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
+                            for nome in nomes:
+                                if nome[1].upper() in paragrafo.upper():
+                                    paragrafofim = ""
+                                    if len(paragrafo) > 2500:
+                                        dividido = paragrafo.upper().split(nome[1].upper(), 1)
+                                        if len(dividido[0]) > 1000:
+                                            paragrafofim += dividido[0][-1000:] + nome[1]
+                                        else:
+                                            paragrafofim += dividido[0] + nome[1]
+                                        if len(dividido[1]) > 1000:
+                                            paragrafofim += dividido[1][:1000]
+                                        else:
+                                            paragrafofim += dividido[1]
                                     else:
-                                        paragrafofim += dividido[0] + nome[1]
-                                    if len(dividido[1]) > 1000:
-                                        paragrafofim += dividido[1][:1000]
-                                    else:
-                                        paragrafofim += dividido[1]
-                                else:
-                                    paragrafofim = paragrafo
+                                        paragrafofim = paragrafo
 
-                                link = f"http://diariooficial.imprensaoficial.com.br/doflash/prototipo/{ano}/{meses[int(mes)]}/{diaExtenso}/{caderno}/pdf/pg_{numpag}.pdf"
-                                mycursor.execute(f'INSERT INTO email (id_email, fk_id_associado, corpo, pagina, estado, envio) VALUES (0, {nome[0]}, "{paragrafofim}", "{link}", 0, 0) ') 
-
+                                    link = f"http://diariooficial.imprensaoficial.com.br/doflash/prototipo/{ano}/{meses[int(mes)]}/{diaExtenso}/{caderno}/pdf/pg_{numpag}.pdf"
+                                    mycursor.execute(f'INSERT INTO email (id_email, fk_id_associado, corpo, pagina, estado, envio) VALUES (0, {nome[0]}, "{paragrafofim}", "{link}", 0, 0) ') 
 
         # EXCLUIR PDFS DAS PÁGINAS BAIXADAS
+        f.close()
         pdfs = sorted(os.listdir(caminho))
         pdf_files = [f for f in pdfs if f.startswith("cidade") or f.startswith("exec1") or f.startswith("exec2")]
         for nomeArquivo in pdf_files:
