@@ -2,7 +2,7 @@ from datetime import datetime, date
 import requests
 import os
 import mysql.connector
-from PyPDF2 import PdfFileReader, PdfFileMerger
+from PyPDF2 import PdfReader, PdfFileMerger
 import time
 
 # CONEXÃO DO MYSQL E CRIAÇÃO DO BANCO DE DADOS, INSIRA NAS VARIÁVEIS AS CREDENCIAIS
@@ -95,11 +95,12 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
 
             for pag in range(1,9999): # BAIXAR PDFS DE HOJE DOS 3 CADERNOS - DIARIO OFICIAL 
 
+                TemCaderno = True
+
                 if os.path.exists(f".\paginas\Caderno_{caderno}_{diaExtenso}_{mes}.pdf"):
                     break
                 
                 pagExtenso = formatar(pag)
-                SemCaderno = False
 
                 #print(f"Baixando página {pagExtenso} do caderno {caderno}")
 
@@ -111,7 +112,7 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
                 if f.readline()[0:8] != "%PDF-1.4":
                     if pagExtenso == "0001":
                         print(f'Hoje não tem caderno {caderno}')
-                        SemCaderno = True
+                        TemCaderno = False
                         break
                     else:
                         print(f'Ultima página do caderno "{caderno}": ', int(pagExtenso) - 1)
@@ -121,23 +122,23 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
                         break
             
             # CRIAÇÃO DOS CADERNOS UNINDO OS PDFS DAS PÁGINAS
-            if not SemCaderno:
+            if TemCaderno:
                 if not os.path.exists(f".\paginas\Caderno_{caderno}_{diaExtenso}_{mes}.pdf"):
                     pdfs = sorted(os.listdir(caminho))
                     pdf_files = [f for f in pdfs if f.startswith(caderno)]
                     merger = PdfFileMerger()
                     for nomeArquivo in pdf_files:
-                        merger.append(PdfFileReader(os.path.join(caminho, nomeArquivo), "rb")) #AQUI DA ERRO
+                        merger.append(PdfReader(os.path.join(caminho, nomeArquivo), "rb")) #AQUI DA ERRO
                     merger.write(os.path.join(caminho, f"Caderno_{caderno}_{diaExtenso}_{mes}.pdf"))
                     # LER OS PDFS E ENVIAR OS EMAILS
-                    reader = PdfFileReader(f'./paginas/Caderno_{caderno}_{diaExtenso}_{mes}.pdf')
+                    reader = PdfReader(f'./paginas/Caderno_{caderno}_{diaExtenso}_{mes}.pdf', "rb")
                     for i in range(reader.getNumPages()):
                         pagina = reader.getPage(i)
                         numpag = formatar(i + 1)
                         conteudo = pagina.extractText()
                         for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
                             for nome in nomes:
-                                if nome[1].upper() in paragrafo.upper():
+                                if nome[1].upper() in paragrafo.upper(): # CODIGO DE ENVIO DE EMAIL
                                     paragrafofim = ""
                                     if len(paragrafo) > 2500:
                                         dividido = paragrafo.upper().split(nome[1].upper(), 1)
@@ -156,7 +157,6 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
                                     mycursor.execute(f'INSERT INTO email (id_email, fk_id_associado, corpo, pagina, estado, envio) VALUES (0, {nome[0]}, "{paragrafofim}", "{link}", 0, 0) ') 
 
         # EXCLUIR PDFS DAS PÁGINAS BAIXADAS
-        f.close()
         pdfs = sorted(os.listdir(caminho))
         pdf_files = [f for f in pdfs if f.startswith("cidade") or f.startswith("exec1") or f.startswith("exec2")]
         for nomeArquivo in pdf_files:
