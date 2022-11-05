@@ -25,7 +25,7 @@ mycursor = mydb.cursor()
 mycursor.execute("CREATE DATABASE IF NOT EXISTS API_a;")
 mycursor.execute("use API_a;")
 mycursor.execute("CREATE table IF NOT EXISTS associado( id_associado int not null primary key auto_increment, nome varchar(55), email varchar(256), genero varchar(10), cpf varchar(12), rg varchar(10), datanascimento varchar(10) );")
-mycursor.execute("Create table IF NOT EXISTS backoffice(id_back int not null primary key auto_increment, nome varchar(55), senha varchar(20), email varchar(30));")
+mycursor.execute("Create table IF NOT EXISTS backoffice(id_back int not null primary key auto_increment, nome varchar(55), senha varchar(30), email varchar(256) unique,cpf varchar(12),datanascimento varchar (10),telefone varchar(12),escola varchar(256));")
 mycursor.execute("Create table IF NOT EXISTS email( id_email int not null primary key auto_increment, fk_id_associado int, corpo text(19999), pagina varchar(999), estado bool , envio bool);")
 mycursor.execute("ALTER TABLE email ADD FOREIGN KEY (fk_id_associado) REFERENCES associado(id_associado) ON DELETE CASCADE;")
 
