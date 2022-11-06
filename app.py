@@ -8,8 +8,8 @@ import time
 # CONEXÃO DO MYSQL E CRIAÇÃO DO BANCO DE DADOS, INSIRA NAS VARIÁVEIS AS CREDENCIAIS
 
 usuario = "root" # <------- COLOQUE AQUI O USUÁRIO DO MYSQL ----------------------------#
-senha = "admin" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
-horario = "11:21" # <------- COLOQUE AQUI O HORÁRIO QUE DESEJA QUE O SCRIPT RODE ---------------------------#
+senha = "fatec" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
+horario = "20:00" # <------- COLOQUE AQUI O HORÁRIO QUE DESEJA QUE O SCRIPT RODE ---------------------------#
 
 try:
     mydb = mysql.connector.connect(
@@ -55,7 +55,7 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
         mes = d.strftime("%m")
         meses = ['','Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
-        dia = "05"#d.strftime("%d") # STR
+        dia = d.strftime("%d") # STR
         diaExtenso = str(dia)
 
         if len(diaExtenso) == 1:
