@@ -4,12 +4,14 @@ import os
 import mysql.connector
 from PyPDF2 import PdfReader, PdfFileMerger
 import time
+import smtplib
+from email.message import EmailMessage
 
 # CONEXÃO DO MYSQL E CRIAÇÃO DO BANCO DE DADOS, INSIRA NAS VARIÁVEIS AS CREDENCIAIS
 
 usuario = "root" # <------- COLOQUE AQUI O USUÁRIO DO MYSQL ----------------------------#
 senha = "fatec" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
-horario = "20:00" # <------- COLOQUE AQUI O HORÁRIO QUE DESEJA QUE O SCRIPT RODE ---------------------------#
+horario = "20:08" # <------- COLOQUE AQUI O HORÁRIO QUE DESEJA QUE O SCRIPT RODE ---------------------------#
 
 try:
     mydb = mysql.connector.connect(
@@ -18,7 +20,7 @@ try:
     password=senha
     )
 except:
-    print("Erro ao conectar ao banco de dados, verifique as credenciais")
+    print("Erro ao conectar ao banco de dados, verifique as credenciais ou se o banco de dados está rodando")
     exit()
 
 mycursor = mydb.cursor()
@@ -26,7 +28,7 @@ mycursor.execute("CREATE DATABASE IF NOT EXISTS API_a;")
 mycursor.execute("use API_a;")
 mycursor.execute("CREATE table IF NOT EXISTS associado( id_associado int not null primary key auto_increment, nome varchar(55), email varchar(256), genero varchar(10), cpf varchar(12), rg varchar(10), datanascimento varchar(10) );")
 mycursor.execute("Create table IF NOT EXISTS backoffice(id_back int not null primary key auto_increment, nome varchar(55), senha varchar(20), email varchar(30));")
-mycursor.execute("Create table IF NOT EXISTS email( id_email int not null primary key auto_increment, fk_id_associado int, corpo text(19999), pagina varchar(999), estado bool , envio bool);")
+mycursor.execute("Create table IF NOT EXISTS email( id_email int not null primary key auto_increment, fk_id_associado int, corpo text(19999), pagina varchar(999), estado bool , envio bool, data date);")
 mycursor.execute("ALTER TABLE email ADD FOREIGN KEY (fk_id_associado) REFERENCES associado(id_associado) ON DELETE CASCADE;")
 
 mydb = mysql.connector.connect(
@@ -42,20 +44,23 @@ caminho = ".\paginas"
 zero = "0"
 hora = horario.split(":")[0]
 minuto = horario.split(":")[1]
+JaExecutou = False
 
-while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
+while True: 
     d = datetime.now()
-    print(f"EXECUTANDO, AGUARDANDO {hora}:{minuto}, Hora atual: {zero * ( 2 - len( str( d.hour ) )) + str(d.hour)}:{zero * ( 2 - len( str( d.minute ) )) + str(d.minute)}:{zero * ( 2 - len( str( d.second ) )) + str(d.second)}")
+    print(f"EXECUTANDO AUTOMÁTICAMENTE, AGUARDANDO {hora}:{minuto}, Hora atual: {zero * ( 2 - len( str( d.hour ) )) + str(d.hour)}:{zero * ( 2 - len( str( d.minute ) )) + str(d.minute)}:{zero * ( 2 - len( str( d.second ) )) + str(d.second)}")
 
-    if d.hour == int(hora) and d.minute == int(minuto):
+    if d.hour == int(hora) and d.minute == int(minuto) and not JaExecutou: # FAZER A APLICAÇÃO RODAR SOMENTE NO HORÁRIO DEFINIDO
 
         print("INICIANDO APLICAÇÃO")
+
+        d = datetime.now()
 
         ano = d.strftime("%Y")
         mes = d.strftime("%m")
         meses = ['','Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
-        dia = d.strftime("%d") # STR
+        dia = d.strftime("%d") # Caso queira mudar o dia da execução, altere aqui como string, ex: "15"
         diaExtenso = str(dia)
 
         if len(diaExtenso) == 1:
@@ -84,104 +89,135 @@ while True: # FAZER A APLICAÇÃO RODAR SOMENTE AS 20H00
 
         if (diaSemana == 7 or diaSemana == 1): # Se for domingo ou segunda, não tem diário oficial
             print('Hoje não tem diário oficial')
-            exit()
+            JaExecutou = True
+        else:
 
-        # PEGAR TODOS OS NOMES E IDS DOS ASSOCIADOS
+            # PEGAR TODOS OS NOMES E IDS DOS ASSOCIADOS
 
-        mycursor.execute("SELECT id_associado, nome FROM associado")
-        nomes = mycursor.fetchall()
+            mycursor.execute("SELECT id_associado, nome FROM associado")
+            nomes = mycursor.fetchall()
 
-        for caderno in ("cidade", "exec1", "exec2"):
+            for caderno in ("cidade", "exec1", "exec2"):
 
-            for pag in range(1,9999): # BAIXAR PDFS DE HOJE DOS 3 CADERNOS - DIARIO OFICIAL 
+                for pag in range(1,9999): # BAIXAR PDFS DE HOJE DOS 3 CADERNOS - DIARIO OFICIAL 
 
-                TemCaderno = True
+                    TemCaderno = True
 
-                if os.path.exists(f".\paginas\Caderno_{caderno}_{diaExtenso}_{mes}.pdf"):
-                    break
+                    if os.path.exists(f".\paginas\Caderno_{caderno}_{diaExtenso}_{mes}.pdf"):
+                        break
+                    
+                    pagExtenso = formatar(pag)
+
+                    #print(f"Baixando página {pagExtenso} do caderno {caderno}")
+
+                    link = f"http://diariooficial.imprensaoficial.com.br/doflash/prototipo/{ano}/{meses[int(mes)]}/{diaExtenso}/{caderno}/pdf/pg_{pagExtenso}.pdf"
+
+                    pdf = requests.get(link)
+                    open(f"./paginas/{caderno}_{pagExtenso}.pdf", "wb").write(pdf.content)
+                    f = open(f"./paginas/{caderno}_{pagExtenso}.pdf", "r")
+                    if f.readline()[0:8] != "%PDF-1.4":
+                        if pagExtenso == "0001":
+                            print(f'Hoje não tem caderno {caderno}')
+                            TemCaderno = False
+                            break
+                        else:
+                            print(f'Ultima página do caderno "{caderno}": ', int(pagExtenso) - 1)
+                        f.close()
+                        if os.path.exists(f"./paginas/{caderno}_{pagExtenso}.pdf"):
+                            os.remove(f"./paginas/{caderno}_{pagExtenso}.pdf")
+                            break
                 
-                pagExtenso = formatar(pag)
+                # CRIAÇÃO DOS CADERNOS UNINDO OS PDFS DAS PÁGINAS
+                if TemCaderno:
+                    if not os.path.exists(f".\paginas\Caderno_{caderno}_{diaExtenso}_{mes}.pdf"):
+                        pdfs = sorted(os.listdir(caminho))
+                        pdf_files = [f for f in pdfs if f.startswith(caderno)]
+                        merger = PdfFileMerger()
+                        for nomeArquivo in pdf_files:
+                            merger.append(PdfReader(os.path.join(caminho, nomeArquivo), "rb")) #AQUI DA ERRO
+                        merger.write(os.path.join(caminho, f"Caderno_{caderno}_{diaExtenso}_{mes}.pdf"))
+                        # LER OS PDFS E ENVIAR OS EMAILS
+                        reader = PdfReader(f'./paginas/Caderno_{caderno}_{diaExtenso}_{mes}.pdf', "rb")
+                        for i in range(reader.getNumPages()):
+                            pagina = reader.getPage(i)
+                            numpag = formatar(i + 1)
+                            conteudo = pagina.extractText()
+                            for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
+                                for nome in nomes:
+                                    if nome[1].upper() in paragrafo.upper(): # CODIGO DE ENVIO DE EMAIL
+                                        paragrafofim = ""
+                                        if len(paragrafo) > 2500:
+                                            dividido = paragrafo.upper().split(nome[1].upper(), 1)
+                                            if len(dividido[0]) > 1000:
+                                                paragrafofim += dividido[0][-1000:] + nome[1]
+                                            else:
+                                                paragrafofim += dividido[0] + nome[1]
+                                            if len(dividido[1]) > 1000:
+                                                paragrafofim += dividido[1][:1000]
+                                            else:
+                                                paragrafofim += dividido[1]
+                                        else:
+                                            paragrafofim = paragrafo
 
-                #print(f"Baixando página {pagExtenso} do caderno {caderno}")
+                                        link = f"http://diariooficial.imprensaoficial.com.br/doflash/prototipo/{ano}/{meses[int(mes)]}/{diaExtenso}/{caderno}/pdf/pg_{numpag}.pdf"
+                                        mycursor.execute(f'INSERT INTO email VALUES (0, {nome[0]}, "{paragrafofim}", "{link}", 0, 0, "{ano}-{mes}-{dia}");')
 
-                link = f"http://diariooficial.imprensaoficial.com.br/doflash/prototipo/{ano}/{meses[int(mes)]}/{diaExtenso}/{caderno}/pdf/pg_{pagExtenso}.pdf"
+            # EXCLUIR PDFS DAS PÁGINAS BAIXADAS
 
-                pdf = requests.get(link)
-                open(f"./paginas/{caderno}_{pagExtenso}.pdf", "wb").write(pdf.content)
-                f = open(f"./paginas/{caderno}_{pagExtenso}.pdf", "r")
-                if f.readline()[0:8] != "%PDF-1.4":
-                    if pagExtenso == "0001":
-                        print(f'Hoje não tem caderno {caderno}')
-                        TemCaderno = False
-                        break
-                    else:
-                        print(f'Ultima página do caderno "{caderno}": ', int(pagExtenso) - 1)
-                    f.close()
-                    if os.path.exists(f"./paginas/{caderno}_{pagExtenso}.pdf"):
-                        os.remove(f"./paginas/{caderno}_{pagExtenso}.pdf")
-                        break
+            pdfs = sorted(os.listdir(caminho))
+            pdf_files = [f for f in pdfs if f.startswith("cidade") or f.startswith("exec1") or f.startswith("exec2")]
+            for nomeArquivo in pdf_files:
+                os.remove(os.path.join(caminho, nomeArquivo))
+
+            # EXCLUIR EMAILS REPETIDOS DO BANCO DE DADOS
+
+            mydb.commit()
+
+            mycursor.execute("DELETE t1 FROM email t1 INNER JOIN email t2 WHERE t1.id_email < t2.id_email AND t1.fk_id_associado = t2.fk_id_associado AND t1.corpo = t2.corpo AND t1.pagina = t2.pagina")
+
+            mydb.commit() # :D
+
+            horaEnvio = datetime.combine(date.today(), datetime.strptime("23:00:00", "%H:%M:%S").time()) - d
+            falta = horaEnvio.total_seconds()
+            horas = int(falta // 3600)
+            minutos = int((falta % 3600) // 60)
+            segundos = int(falta % 60)
+            print(f"Faltam {horas} horas, {minutos} minutos e {segundos} segundos para o envio dos emails")
+            time.sleep(falta)
+
+            mycursor.execute("SELECT nome, email, corpo, id_email FROM email INNER JOIN associado ON email.fk_id_associado = associado.id_associado WHERE email.envio = 0 AND email.data != CURRENT_DATE()")
+            emails = mycursor.fetchall()
+            c = 0
+            for email in emails:
+                mycursor.execute(f"UPDATE email SET envio = 1 WHERE id_email = {email[3]};")
+                mydb.commit()
+                server = smtplib.SMTP('smtp.gmail.com', 587) # REALIZAR ENVIO DE EMAIL AUTOMATICA
+                server.ehlo()
+                server.starttls()
+                server.login("sendmefatec@gmail.com", 'thpqnhojramfkxkv')
+                em = EmailMessage()
+                em.set_content(f"Nome: {email[0]}\nEmail: {email[1]}\n\nConteúdo:{email[2]}")
+                em['Subject'] = f"EMAIL AUTOMÁTICO - {email[0]}"
+                em['From'] = "EMAIL AUTOMÁTICO - Send.me"
+                em['To'] = "sendmefatec@gmail.com"
+                server.send_message(em)
+                server.quit()
+                c += 1
+                print(f"Email {c} enviado automaticamente!")
             
-            # CRIAÇÃO DOS CADERNOS UNINDO OS PDFS DAS PÁGINAS
-            if TemCaderno:
-                if not os.path.exists(f".\paginas\Caderno_{caderno}_{diaExtenso}_{mes}.pdf"):
-                    pdfs = sorted(os.listdir(caminho))
-                    pdf_files = [f for f in pdfs if f.startswith(caderno)]
-                    merger = PdfFileMerger()
-                    for nomeArquivo in pdf_files:
-                        merger.append(PdfReader(os.path.join(caminho, nomeArquivo), "rb")) #AQUI DA ERRO
-                    merger.write(os.path.join(caminho, f"Caderno_{caderno}_{diaExtenso}_{mes}.pdf"))
-                    # LER OS PDFS E ENVIAR OS EMAILS
-                    reader = PdfReader(f'./paginas/Caderno_{caderno}_{diaExtenso}_{mes}.pdf', "rb")
-                    for i in range(reader.getNumPages()):
-                        pagina = reader.getPage(i)
-                        numpag = formatar(i + 1)
-                        conteudo = pagina.extractText()
-                        for paragrafo in conteudo.replace('"',"'").replace("  ", " ").split('\n'):
-                            for nome in nomes:
-                                if nome[1].upper() in paragrafo.upper(): # CODIGO DE ENVIO DE EMAIL
-                                    paragrafofim = ""
-                                    if len(paragrafo) > 2500:
-                                        dividido = paragrafo.upper().split(nome[1].upper(), 1)
-                                        if len(dividido[0]) > 1000:
-                                            paragrafofim += dividido[0][-1000:] + nome[1]
-                                        else:
-                                            paragrafofim += dividido[0] + nome[1]
-                                        if len(dividido[1]) > 1000:
-                                            paragrafofim += dividido[1][:1000]
-                                        else:
-                                            paragrafofim += dividido[1]
-                                    else:
-                                        paragrafofim = paragrafo
+            print("FIM DA EXECUÇÃO!")
+            time.sleep(60)
 
-                                    link = f"http://diariooficial.imprensaoficial.com.br/doflash/prototipo/{ano}/{meses[int(mes)]}/{diaExtenso}/{caderno}/pdf/pg_{numpag}.pdf"
-                                    mycursor.execute(f'INSERT INTO email (id_email, fk_id_associado, corpo, pagina, estado, envio) VALUES (0, {nome[0]}, "{paragrafofim}", "{link}", 0, 0) ') 
-
-        # EXCLUIR PDFS DAS PÁGINAS BAIXADAS
-        pdfs = sorted(os.listdir(caminho))
-        pdf_files = [f for f in pdfs if f.startswith("cidade") or f.startswith("exec1") or f.startswith("exec2")]
-        for nomeArquivo in pdf_files:
-            os.remove(os.path.join(caminho, nomeArquivo))
-
-        # EXCLUIR EMAILS REPETIDOS DO BANCO DE DADOS
-
-        mydb.commit()
-
-        mycursor.execute("DELETE t1 FROM email t1 INNER JOIN email t2 WHERE t1.id_email < t2.id_email AND t1.fk_id_associado = t2.fk_id_associado AND t1.corpo = t2.corpo AND t1.pagina = t2.pagina")
-
-        mydb.commit() # :D
-
-        print("FIM DA EXECUÇÃO!")
-        time.sleep(60)
 
     else:
-
-        # time sleep da hora atual até as 20:00:00
+        JaExecutou = False
+        # TIME SLEEP DA HORA ATUAL ATÉ O HORÁRIO DE EXECUÇÃO DO PROGRAMA
         falta = datetime.combine(date.today(), datetime.strptime(f'{zero * ( 2 - len( str( hora ) )) + str(hora)}:{zero * ( 2 - len( str( minuto ) )) + str(minuto)}:00', '%H:%M:%S').time()) - d
         falta = falta.total_seconds()
         if falta < 0:
             falta = 86400 + (falta * -1)
 
-        #segundos em horas e minutos
+        # SEGUNDOS EM HORAS E MINUTOS RESTANTES PARA A EXECUÇÃO DO PROGRAMA
         horas = int(falta // 3600)
         minutos = int((falta % 3600) // 60)
         segundos = int(falta % 60)
