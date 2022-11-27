@@ -11,7 +11,7 @@ from email.message import EmailMessage
 
 usuario = "root" # <------- COLOQUE AQUI O USUÁRIO DO MYSQL ----------------------------#
 senha = "fatec" # <------- COLOQUE AQUI A SENHA DO MYSQL ---------------------------#
-horario = "20:08" # <------- COLOQUE AQUI O HORÁRIO QUE DESEJA QUE O SCRIPT RODE ---------------------------#
+horario = "20:00" # <------- COLOQUE AQUI O HORÁRIO QUE DESEJA QUE O SCRIPT RODE ---------------------------#
 
 try:
     mydb = mysql.connector.connect(
